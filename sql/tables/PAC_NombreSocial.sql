@@ -1,0 +1,8 @@
+SET ANSI_NULLS OFF
+
+SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [dbo].[PAC_NombreSocial](
+	[PAC_PAC_Numero] [real] NOT NULL,
+	[PAC_PAC_NombreSocial] [varchar](100) NOT NULL
+) ON [PRIMARY]
