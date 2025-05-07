@@ -5,7 +5,7 @@ SET QUOTED_IDENTIFIER ON
 
 IF OBJECT_ID(N'dbo.PAC_Paciente', N'U') IS NULL BEGIN
   CREATE TABLE [dbo].[PAC_Paciente](
-    [PAC_PAC_Numero] [float] NOT NULL,
+    [PAC_PAC_Numero] [float] PRIMARY KEY,
     [PAC_PAC_Rut] [varchar](10) NOT NULL,
     [PAC_PAC_ApellPater] [varchar](20) NOT NULL,
     [PAC_PAC_ApellMater] [varchar](20) NOT NULL,

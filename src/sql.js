@@ -3,31 +3,32 @@ import mssql from "mssql";
 import * as fs from "fs";
 import * as path from "path";
 
-const baseTablesScripts = fs
-  .readdirSync(path.join(".", "sql", "tables"))
-  .filter((f) => f.endsWith(".sql"))
-  .map((f) => path.join(".", "sql", "tables", f));
+const tablesPath = path.join(".", "sql", "tables");
 
-const tabExtensionTablesScripts = fs
-  .readdirSync(path.join(".", "sql", "tables", "extension", "tab"))
-  .filter((f) => f.endsWith(".sql"))
-  .map((f) => path.join(".", "sql", "tables", "extension", "tab", f));
+function getScriptsPaths(/** @type {string} */ scriptsDirectoryPath) {
+  return fs
+    .readdirSync(scriptsDirectoryPath)
+    .filter((filename) => filename.endsWith(".sql"))
+    .map((filename) => path.join(scriptsDirectoryPath, filename));
+}
 
-// .filter((x) => x.endsWith(".sql"));
-// .map((x) => fs.readFileSync(path.join(__dirname, "sql", x), "utf-8"))
+const mainTablesFilenames = getScriptsPaths(tablesPath);
 
-async function createTables(
-  /** @type {string[]} */ tableScripts,
-  /** @type {mssql.ConnectionPool}*/ connectionPool
+const tabExtensionTableFilenames = getScriptsPaths(
+  path.join(tablesPath, "extension", "tab")
+);
+
+const extensionTableFilenames = getScriptsPaths(
+  path.join(tablesPath, "extension")
+);
+
+async function createTable(
+  /** @type {string} */ scriptPath,
+  /** @type {mssql.Transaction}*/ tran
 ) {
-  for (const tableScript of tableScripts) {
-    try {
-      const sql = fs.readFileSync(tableScript, "utf-8");
-      await new mssql.Request(connectionPool).query(sql);
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  console.log(`Ejecutando script '${path.basename(scriptPath)}'`);
+  const sql = fs.readFileSync(scriptPath, "utf-8");
+  await tran.request().query(sql);
 }
 
 const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_PORT } = process.env;
@@ -46,12 +47,33 @@ mssql
   .then(async (con) => {
     console.log("Conectado a la base de datos");
 
+    console.log("Iniciando transacción");
+    const tran = new mssql.Transaction(con);
+    await tran.begin();
+
     try {
-      await createTables(baseTablesScripts, con);
+      console.log("Creando tablas principales");
+      for (const mainTableFilename of mainTablesFilenames) {
+        await createTable(mainTableFilename, tran);
+      }
+
+      console.log("Creando tablas TAB de extension");
+
+      for (const tabExtensionTableFilename of tabExtensionTableFilenames) {
+        await createTable(tabExtensionTableFilename, tran);
+      }
+
+      console.log("Creando tablas de extension");
+
+      for (const extensionTableFilename of extensionTableFilenames) {
+        await createTable(extensionTableFilename, tran);
+      }
       // await createTables(tabExtensionTablesScripts, con);
     } catch (error) {
-      throw error;
+      console.error(error);
     }
+
+    await tran.commit();
 
     // const res = (await con.request().query("SELECT DB_NAME();")).recordset;
 
