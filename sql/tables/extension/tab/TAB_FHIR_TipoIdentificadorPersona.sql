@@ -1,11 +1,11 @@
-IF OBJECT_ID(N'dbo.TAB_TipoIdentificadorPersona', N'U') IS NULL BEGIN
-  CREATE TABLE [dbo].[TAB_TipoIdentificadorPersona] (
+IF OBJECT_ID(N'dbo.TAB_FHIR_TipoIdentificadorPersona', N'U') IS NULL BEGIN
+  CREATE TABLE [dbo].[TAB_FHIR_TipoIdentificadorPersona] (
       Codigo CHAR(2) PRIMARY KEY,
       Nombre VARCHAR(50) NOT NULL,
       Descripcion VARCHAR(100) NOT NULL
   )
 
-  INSERT INTO [dbo].[TAB_TipoIdentificadorPersona]
+  INSERT INTO [dbo].[TAB_FHIR_TipoIdentificadorPersona]
     (Codigo, Nombre, Descripcion)
   VALUES
   ('01', 'RUN', 'Rol Único Nacional'),
