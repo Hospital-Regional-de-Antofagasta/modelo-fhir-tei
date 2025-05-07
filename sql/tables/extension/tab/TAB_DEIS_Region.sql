@@ -3,6 +3,8 @@ SET ANSI_NULLS OFF
 
 SET QUOTED_IDENTIFIER ON
 
+DROP TABLE IF EXISTS [dbo].[TAB_DEIS_Region];
+
 CREATE TABLE [dbo].[TAB_DEIS_Region]
 (
     [Id] TINYINT CONSTRAINT PK_DEIS_REGION PRIMARY KEY,
@@ -39,3 +41,4 @@ VALUES
     (15, '15', 'Arica y Parinacota'),
     (16, '16', 'Ñuble'),
     (17, '99', 'Desconocido');
+

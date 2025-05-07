@@ -51,6 +51,15 @@ mssql
     const tran = new mssql.Transaction(con);
     await tran.begin();
 
+    await tran
+      .request()
+      .input(
+        "command1",
+        mssql.NVarChar(2000),
+        "ALTER TABLE ? NOCHECK CONSTRAINT ALL"
+      )
+      .execute("sp_MSforeachtable");
+
     try {
       console.log("Creando tablas principales");
       for (const mainTableFilename of mainTablesFilenames) {
@@ -72,6 +81,15 @@ mssql
     } catch (error) {
       console.error(error);
     }
+
+    await tran
+      .request()
+      .input(
+        "command1",
+        mssql.NVarChar(2000),
+        "ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all"
+      )
+      .execute("sp_MSforeachtable");
 
     await tran.commit();
 
