@@ -1,101 +1,108 @@
 import "dotenv/config";
-import mssql from "mssql";
-import * as fs from "fs";
-import * as path from "path";
-
-const tablesPath = path.join(".", "sql", "tables");
-
-function getScriptsPaths(/** @type {string} */ scriptsDirectoryPath) {
-  return fs
-    .readdirSync(scriptsDirectoryPath)
-    .filter((filename) => filename.endsWith(".sql"))
-    .map((filename) => path.join(scriptsDirectoryPath, filename));
-}
-
-const mainTablesFilenames = getScriptsPaths(tablesPath);
-
-const tabExtensionTableFilenames = getScriptsPaths(
-  path.join(tablesPath, "extension", "tab")
-);
-
-const extensionTableFilenames = getScriptsPaths(
-  path.join(tablesPath, "extension")
-);
-
-async function createTable(
-  /** @type {string} */ scriptPath,
-  /** @type {mssql.Transaction}*/ tran
-) {
-  console.log(`Ejecutando script '${path.basename(scriptPath)}'`);
-  const sql = fs.readFileSync(scriptPath, "utf-8");
-  await tran.request().query(sql);
-}
+import path from "path";
+import { getDatabaseConnection, getFilenamesRecursively } from "./utils.js";
+import { dropTables } from "./drop-tables.js";
+import { createTables } from "./create-tables.js";
 
 const { DB_USER, DB_PASSWORD, DB_HOST, DB_NAME, DB_PORT } = process.env;
 
-mssql
-  .connect({
-    server: String(DB_HOST),
-    database: String(DB_NAME),
-    user: String(DB_USER),
-    password: String(DB_PASSWORD),
-    options: {
-      trustServerCertificate: true,
-      encrypt: false,
-    },
-  })
-  .then(async (con) => {
-    console.log("Conectado a la base de datos");
+const MODO = process.argv[4];
 
-    console.log("Iniciando transacción");
-    const tran = new mssql.Transaction(con);
-    await tran.begin();
+if (
+  MODO !== "drop-tables" &&
+  MODO !== "create-tables" &&
+  MODO !== "drop-and-create-tables"
+) {
+  throw new Error("Modo incorrecto");
+}
 
-    await tran
-      .request()
-      .input(
-        "command1",
-        mssql.NVarChar(2000),
-        "ALTER TABLE ? NOCHECK CONSTRAINT ALL"
-      )
-      .execute("sp_MSforeachtable");
+let sqlTableScriptsFilenames = getFilenamesRecursively(
+  path.join(".", "sql", "tables")
+);
 
-    try {
-      console.log("Creando tablas principales");
-      for (const mainTableFilename of mainTablesFilenames) {
-        await createTable(mainTableFilename, tran);
-      }
+const sqlAlterPacPacienteScriptFilename = sqlTableScriptsFilenames.find((f) =>
+  f.endsWith("PAC_Paciente.alter.sql")
+);
 
-      console.log("Creando tablas TAB de extension");
+const sqlAddConstraintsScriptFilename = sqlTableScriptsFilenames.find((f) =>
+  f.endsWith("constraints.add.sql")
+);
 
-      for (const tabExtensionTableFilename of tabExtensionTableFilenames) {
-        await createTable(tabExtensionTableFilename, tran);
-      }
+const sqlDropConstraintsScriptFilename = sqlTableScriptsFilenames.find((f) =>
+  f.endsWith("constraints.drop.sql")
+);
 
-      console.log("Creando tablas de extension");
+const sqlDropTablesScriptFilename = sqlTableScriptsFilenames.find((f) =>
+  f.endsWith("tables.drop.sql")
+);
 
-      for (const extensionTableFilename of extensionTableFilenames) {
-        await createTable(extensionTableFilename, tran);
-      }
-      // await createTables(tabExtensionTablesScripts, con);
-    } catch (error) {
-      console.error(error);
+if (
+  sqlDropConstraintsScriptFilename === undefined ||
+  sqlDropTablesScriptFilename === undefined ||
+  sqlAlterPacPacienteScriptFilename === undefined ||
+  sqlAddConstraintsScriptFilename === undefined
+) {
+  throw new Error("No se encontraron todos los scripts");
+}
+
+sqlTableScriptsFilenames = sqlTableScriptsFilenames.filter(
+  (f) =>
+    !f.endsWith(".alter.sql") &&
+    !f.endsWith(".drop.sql") &&
+    !f.endsWith(".add.sql")
+);
+
+getDatabaseConnection({
+  DB_USER,
+  DB_PASSWORD,
+  DB_HOST,
+  DB_NAME,
+  DB_PORT,
+}).then(async (con) => {
+  console.log("Conectado a la base de datos");
+
+  const tran = con.transaction();
+
+  console.log("Iniciando transacción...");
+  await tran.begin();
+
+  try {
+    if (MODO === "drop-tables") {
+      await dropTables({
+        tran,
+        sqlDropConstraintsScriptFilename,
+        sqlDropTablesScriptFilename,
+      });
+    } else if (MODO === "create-tables") {
+      await createTables({
+        tran,
+        sqlTableScriptsFilenames,
+        sqlAlterPacPacienteScriptFilename,
+        sqlAddConstraintsScriptFilename,
+      });
+    } else if (MODO === "drop-and-create-tables") {
+      await dropTables({
+        tran,
+        sqlDropConstraintsScriptFilename,
+        sqlDropTablesScriptFilename,
+      });
+
+      await createTables({
+        tran,
+        sqlTableScriptsFilenames,
+        sqlAlterPacPacienteScriptFilename,
+        sqlAddConstraintsScriptFilename,
+      });
     }
 
-    await tran
-      .request()
-      .input(
-        "command1",
-        mssql.NVarChar(2000),
-        "ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all"
-      )
-      .execute("sp_MSforeachtable");
-
+    console.log("Confirmando transacción...");
     await tran.commit();
+  } catch (error) {
+    console.error(error);
+    console.log("Revirtiendo transacción...");
+    await tran.rollback();
+  }
 
-    // const res = (await con.request().query("SELECT DB_NAME();")).recordset;
-
-    console.log("OK");
-
-    await con.close();
-  });
+  console.log("Listo ✅");
+  await con.close();
+});

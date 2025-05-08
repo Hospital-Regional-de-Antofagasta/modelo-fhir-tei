@@ -6,7 +6,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "sql": "node src/sql.js"
+    "drop-tables": "node src/sql.js -- -- drop-tables",
+    "create-tables": "node src/sql.js -- -- create-tables",
+    "drop-and-create-tables": "node src/sql.js -- -- drop-and-create-tables"
   },
   "repository": {
     "type": "git",
@@ -22,5 +24,8 @@
   "dependencies": {
     "dotenv": "^16.5.0",
     "mssql": "^11.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.45"
   }
 }

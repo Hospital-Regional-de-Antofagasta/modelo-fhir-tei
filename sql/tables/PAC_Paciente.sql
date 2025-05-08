@@ -3,7 +3,6 @@ SET ANSI_NULLS OFF
 
 SET QUOTED_IDENTIFIER ON
 
-DROP TABLE IF EXISTS [dbo].[PAC_Paciente];
 
 CREATE TABLE [dbo].[PAC_Paciente](
   [PAC_PAC_Numero] [float] PRIMARY KEY,

@@ -2,8 +2,6 @@ SET ANSI_NULLS ON
 
 SET QUOTED_IDENTIFIER ON
 
-DROP TABLE IF EXISTS [dbo].[TAB_TipoProfe];
-
 CREATE TABLE [dbo].[TAB_TipoProfe](
     [TAB_Codigo] [char](4) NOT NULL,
     [TAB_Text] [varchar](30) NOT NULL,

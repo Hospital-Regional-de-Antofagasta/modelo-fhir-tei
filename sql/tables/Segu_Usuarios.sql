@@ -4,7 +4,6 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 
 
-DROP TABLE IF EXISTS [dbo].[Segu_Usuarios];
 
 CREATE TABLE [dbo].[Segu_Usuarios](
 	[Segu_Usr_Cuenta] [varchar](10) PRIMARY KEY

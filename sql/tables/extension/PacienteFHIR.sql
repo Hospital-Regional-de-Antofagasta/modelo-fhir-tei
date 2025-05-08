@@ -1,11 +1,11 @@
 
-DROP TABLE IF EXISTS [dbo].[PacienteFHIR];
 
 CREATE TABLE [dbo].[PacienteFHIR](
-    NumeroPaciente FLOAT NOT NULL CONSTRAINT FK_PACIENTEFHIR_PACIENTE FOREIGN KEY REFERENCES [dbo].[PAC_Paciente]([PAC_PAC_Numero]),
+    Id UNIQUEIDENTIFIER DEFAULT NEWID() CONSTRAINT PK_PACIENTEFHIR PRIMARY KEY,
+    NumeroPaciente FLOAT NOT NULL,
     
     /* https://build.fhir.org/ig/Minsal-CL/SIGTEv2-IG/StructureDefinition-PatientLE-definitions.html#key_Patient.id */
-    FHIR_Id VARCHAR(64) PRIMARY KEY,
+    FHIR_Id VARCHAR(64) NOT NULL UNIQUE,
 
     /* https://build.fhir.org/ig/Minsal-CL/SIGTEv2-IG/StructureDefinition-PatientLE-definitions.html#key_Patient.link */
     FHIR_Link VARCHAR(MAX) NULL,
@@ -14,7 +14,7 @@ CREATE TABLE [dbo].[PacienteFHIR](
     FHIR_GeneralPractitioner VARCHAR(MAX) NULL,
 
     /* https://build.fhir.org/ig/Minsal-CL/SIGTEv2-IG/StructureDefinition-PatientLE-definitions.html#key_Patient.gender */
-    FHIR_IdGeneroAdministrativo [TINYINT] NULL CONSTRAINT FK_PACIENTEFHIR_GENEROADMINISTRATIVO FOREIGN KEY REFERENCES [dbo].[TAB_DEIS_SexoBiologico]([Id]),
+    FHIR_IdGeneroAdministrativo [TINYINT] NULL,
 
     /* https://build.fhir.org/ig/Minsal-CL/SIGTEv2-IG/StructureDefinition-PatientLE-definitions.html#key_Patient.address */
     FHIR_Address VARCHAR(MAX) NULL,
