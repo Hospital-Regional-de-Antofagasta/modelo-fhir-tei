@@ -7,14 +7,14 @@ import path from "path";
  * @param {object} params
  * @param {import("mssql").Transaction} params.tran
  * @param {string[]} params.sqlTableScriptsFilenames
- * @param {string} params.sqlAlterPacPacienteScriptFilename
+ * @param {string[]} params.sqlAlterScriptsFilenames
  * @param {string} params.sqlAddConstraintsScriptFilename
  *
  */
 export async function createTables({
   tran,
   sqlTableScriptsFilenames,
-  sqlAlterPacPacienteScriptFilename,
+  sqlAlterScriptsFilenames,
   sqlAddConstraintsScriptFilename,
 }) {
   for (const createTableScriptFilename of sqlTableScriptsFilenames) {
@@ -28,12 +28,11 @@ export async function createTables({
     await tran.request().query(createTableQuery);
   }
 
-  console.log("Agregando columnas nuevas a PAC_Paciente...");
-  const alterPacPacienteQuery = fs.readFileSync(
-    sqlAlterPacPacienteScriptFilename,
-    "utf-8"
-  );
-  await tran.request().query(alterPacPacienteQuery);
+  console.log("Modificando tablas...");
+  for (const alterTableScriptFilename of sqlAlterScriptsFilenames) {
+    const alterTableQuery = fs.readFileSync(alterTableScriptFilename, "utf-8");
+    await tran.request().query(alterTableQuery);
+  }
 
   console.log("Creando constraints...");
   const addConstraintsQuery = fs.readFileSync(

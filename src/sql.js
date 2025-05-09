@@ -20,8 +20,8 @@ let sqlTableScriptsFilenames = getFilenamesRecursively(
   path.join(".", "sql", "tables")
 );
 
-const sqlAlterPacPacienteScriptFilename = sqlTableScriptsFilenames.find((f) =>
-  f.endsWith("PAC_Paciente.alter.sql")
+const sqlAlterScriptsFilenames = sqlTableScriptsFilenames.filter((f) =>
+  f.endsWith(".alter.sql")
 );
 
 const sqlAddConstraintsScriptFilename = sqlTableScriptsFilenames.find((f) =>
@@ -39,7 +39,7 @@ const sqlDropTablesScriptFilename = sqlTableScriptsFilenames.find((f) =>
 if (
   sqlDropConstraintsScriptFilename === undefined ||
   sqlDropTablesScriptFilename === undefined ||
-  sqlAlterPacPacienteScriptFilename === undefined ||
+  sqlAlterScriptsFilenames.length === 0 ||
   sqlAddConstraintsScriptFilename === undefined
 ) {
   throw new Error("No se encontraron todos los scripts");
@@ -77,7 +77,7 @@ getDatabaseConnection({
       await createTables({
         tran,
         sqlTableScriptsFilenames,
-        sqlAlterPacPacienteScriptFilename,
+        sqlAlterScriptsFilenames,
         sqlAddConstraintsScriptFilename,
       });
     } else if (MODO === "drop-and-create-tables") {
@@ -90,7 +90,7 @@ getDatabaseConnection({
       await createTables({
         tran,
         sqlTableScriptsFilenames,
-        sqlAlterPacPacienteScriptFilename,
+        sqlAlterScriptsFilenames,
         sqlAddConstraintsScriptFilename,
       });
     }
