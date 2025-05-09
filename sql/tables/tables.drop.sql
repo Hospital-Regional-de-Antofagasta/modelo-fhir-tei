@@ -34,8 +34,10 @@ DROP TABLE IF EXISTS [dbo].[DomicilioPrestador];
 DROP TABLE IF EXISTS [dbo].[MedioContactoPrestador];
 DROP TABLE IF EXISTS [dbo].[PrestadorFHIR];
 DROP TABLE IF EXISTS [dbo].[TituloProfesionalPrestador];
+DROP TABLE IF EXISTS [dbo].[TAB_FHIR_TituloProfesional];
 
 
 
+DROP TABLE IF EXISTS [dbo].[TAB_DEIS_EspecialidadMedica]
 
 
