@@ -4,7 +4,6 @@ import * as path from "path";
 
 export function getFilenamesRecursively(/** @type {string} */ directory) {
   const dirents = fs.readdirSync(directory, {
-    recursive: true,
     withFileTypes: true,
   });
 
