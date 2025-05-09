@@ -10,8 +10,8 @@ CREATE TABLE [dbo].[TituloProfesionalPrestador]
     EmitidoPorEntidad VARCHAR(100) NULL,
 
     CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
-    CreatedBy UNIQUEIDENTIFIER NOT NULL,
+    CreatedBy VARCHAR(10) NOT NULL,
     
     DeletedAt DATETIME NULL,
-    DeletedBy UNIQUEIDENTIFIER NULL
+    DeletedBy VARCHAR(10) NULL
 )
