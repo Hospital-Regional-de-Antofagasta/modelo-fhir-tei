@@ -1,6 +1,5 @@
 
 
-DROP TABLE IF EXISTS [dbo].[TAB_DEIS_TipoVia];
 
 CREATE TABLE [dbo].[TAB_DEIS_TipoVia]
 (
