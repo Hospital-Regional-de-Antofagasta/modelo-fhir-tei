@@ -1,11 +1,8 @@
-
-CREATE TABLE [dbo].[TituloProfesionalPrestador]
+CREATE TABLE [dbo].[EspecialidadMedicaPrestador]
 (
     IdPrestador UNIQUEIDENTIFIER NOT NULL,
-    IdTituloProfesional SMALLINT NOT NULL,
-    CONSTRAINT PK_TITULOPROFESIONALPRESTADOR PRIMARY KEY (IdPrestador, IdTituloProfesional),
-
-    MencionEn VARCHAR(100) NULL,
+    IdEspecialidadMedica SMALLINT NOT NULL,
+    CONSTRAINT PK_ESPECIALIDADMEDICAPRESTADOR PRIMARY KEY (IdPrestador, IdEspecialidadMedica),
 
     FechaEmision DATETIME NULL,
     FechaCaducidad DATETIME NULL,
@@ -17,3 +14,4 @@ CREATE TABLE [dbo].[TituloProfesionalPrestador]
     DeletedAt DATETIME NULL,
     DeletedBy VARCHAR(10) NULL
 )
+
