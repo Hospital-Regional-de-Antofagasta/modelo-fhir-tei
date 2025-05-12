@@ -1,10 +1,10 @@
 CREATE TABLE [dbo].[SolicitudInterconsulta]
 (
-    Id UNIQUEIDENTIFIER NOT NULL CONSTRAINT PK_SOLICITUDINTERCONSULTA PRIMARY KEY,
+    Id UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID() CONSTRAINT PK_SOLICITUDINTERCONSULTA PRIMARY KEY,
     NumeroPaciente FLOAT NOT NULL,
 
-
-    -- EXTENSIONS
+    -- INICIO EXTENSIONES
+    IdMotivoCierreInterconsulta TINYINT NULL,
     RequiereExamen BIT NULL,
     EsAtencionPreferente BIT NULL,
     TieneResolutividadAPS BIT NULL,
@@ -34,14 +34,29 @@ CREATE TABLE [dbo].[SolicitudInterconsulta]
 
     MotivoNoPertinencia VARCHAR(250) NULL,
 
-    IdentificadorMINSAL VARCHAR(64),
-    IdentificadorInternoMINSAL VARCHAR(64),
-    IdentificadorOrigen VARCHAR(64),
+    -- FIN EXTENSIONES
 
     ModalidadAtencion  VARCHAR(20) NOT NULL CHECK (ModalidadAtencion in (
         'PRESENCIAL', 'REMOTA', 'TELEMEDICINA'
     )),
-    Prioridad VARCHAR(20) NOT NULL CHECK (Prioridad IN ('ROUTINE', 'URGENT', 'ASAP', 'STAT'))
 
+    Prioridad VARCHAR(20) NOT NULL CHECK (Prioridad IN ('ROUTINE', 'URGENT', 'ASAP', 'STAT')),
 
+    ReferenciaDestino VARCHAR(32) NOT NULL CHECK (ReferenciaDestino IN ('NIVEL_SECUNDARIO', 'APS', 'EXTRA_SISTEMA', 'HOSPITAL_DIGITAL', 'ESTABLECIMIENTO_ALTA_COMPLEJIDAD')),
+
+    MotivoDerivacion VARCHAR(20) NOT NULL CHECK (MotivoDerivacion IN (
+        'CONFIRMACION', 'CONTROL_ESPECIALISTA', 'REALIZA_TRATAMIENTO', 'SEGUIMIENTO', 'OTRO'
+    )),
+
+    -- INICIO FHIR
+    FHIR_Id VARCHAR(64) NULL,
+    FHIR_Identifier_MINSAL VARCHAR(64) NULL,
+    FHIR_Identifier_Origin VARCHAR(64) NULL,
+    -- FIN FHIR
+
+    CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    CreatedBy VARCHAR(10) NOT NULL DEFAULT 'SYSTEM',
+    DeletedAt DATETIME NULL,
+    DeletedBy VARCHAR(10) NULL,
 );
+
