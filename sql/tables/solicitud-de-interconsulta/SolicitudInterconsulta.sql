@@ -26,7 +26,7 @@ CREATE TABLE [dbo].[SolicitudInterconsulta]
     -- REFERENCES TAB_DEIS_EspecialidadMedica x WHERE x.Tipo IN 'GENERAL', 'ODONTOLOGICA'
     IdSubEspecialidadDestino SMALLINT NULL,
 
-    TipoPertinencia VARCHAR(20) NOT NULL CHECK (TipoPertinencia IN (
+    TipoPertinencia VARCHAR(20) NULL CHECK (TipoPertinencia IN (
         'PERTINENTE', 
         'NO_PERTINENTE', 
         'PERTINENTE_INCOMPLETA'
@@ -36,7 +36,7 @@ CREATE TABLE [dbo].[SolicitudInterconsulta]
 
     -- FIN EXTENSIONES
 
-    ModalidadAtencion  VARCHAR(20) NOT NULL CHECK (ModalidadAtencion in (
+    ModalidadAtencion  VARCHAR(20) NULL CHECK (ModalidadAtencion in (
         'PRESENCIAL', 'REMOTA', 'TELEMEDICINA'
     )),
 

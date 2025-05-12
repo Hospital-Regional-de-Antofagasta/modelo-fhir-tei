@@ -1,6 +1,8 @@
 CREATE TABLE [dbo].[MensajeSalida]
 (
     Id UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID () CONSTRAINT PK_MENSAJESALIDA PRIMARY KEY,
+    
+    IdInterconsulta UNIQUEIDENTIFIER NOT NULL,
     TipoEvento VARCHAR(50) NOT NULL CHECK (TipoEvento IN (
         'INICIAR',
         'REFERENCIAR',
@@ -10,7 +12,8 @@ CREATE TABLE [dbo].[MensajeSalida]
         'ATENDER',
         'TERMINAR'
     )),
-    DTO VARCHAR(MAX) NOT NULL,
+
+    BundleDTO VARCHAR(MAX) NOT NULL,
     
     EstadoEnvioMINSAL VARCHAR(20) NOT NULL DEFAULT 'PENDIENTE' CHECK (
         EstadoEnvioMINSAL IN (
