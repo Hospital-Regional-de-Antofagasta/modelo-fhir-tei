@@ -40,5 +40,8 @@ DROP TABLE IF EXISTS [dbo].[TAB_FHIR_TituloProfesional];
 DROP TABLE IF EXISTS [dbo].[EspecialidadMedicaPrestador];
 DROP TABLE IF EXISTS [dbo].[TAB_DEIS_EspecialidadMedica];
 
+DROP TABLE IF EXISTS [dbo].[TAB_FHIR_MotivoCierreInterconsulta];
 
+DROP TABLE IF EXISTS [dbo].[SolicitudInterconsulta];
 DROP TABLE IF EXISTS [dbo].[MensajeSalida];
+DROP TABLE IF EXISTS [dbo].[FHIR_BundleIniciarEnriquecido];

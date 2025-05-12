@@ -27,10 +27,10 @@ ADD
     [PerteneceAPuebloAfrodescendiente] [BIT] NULL,
 
     -- Capitulo 2 inciso 3.4. Religión o Culto Declarado
-    [IdReligion] [TINYINT] NULL,
+    [IdReligion] [TINYINT] NULL
 
-    -- Capitulo 2 inciso 3.5. Situación de Discapacidad
-    [TieneDiscapacidad] [BIT] NULL
+    -- -- Capitulo 2 inciso 3.5. Situación de Discapacidad
+    -- [TieneDiscapacidad] [BIT] NULL
 
     -- Capitulo 2 inciso 6. Datos de dirección (ver 'DomicilioPaciente')
 
