@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "drop-tables": "node src/sql.js -- -- drop-tables",
     "create-tables": "node src/sql.js -- -- create-tables",
     "drop-and-create-tables": "node src/sql.js -- -- drop-and-create-tables"
@@ -26,6 +26,8 @@
     "mssql": "^11.0.1"
   },
   "devDependencies": {
-    "@types/node": "^17.0.45"
+    "@jest/globals": "^29.7.0",
+    "@types/node": "^17.0.45",
+    "jest": "^29.7.0"
   }
 }
