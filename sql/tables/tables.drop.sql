@@ -41,3 +41,4 @@ DROP TABLE IF EXISTS [dbo].[EspecialidadMedicaPrestador];
 DROP TABLE IF EXISTS [dbo].[TAB_DEIS_EspecialidadMedica];
 
 
+DROP TABLE IF EXISTS [dbo].[MensajeSalida];
