@@ -27,19 +27,17 @@ CREATE OR ALTER PROCEDURE CrearPaciente
     -- @TieneDiscapacidad [BIT] = NULL
 AS
 BEGIN
-    DECLARE @resultado TABLE (
-        PAC_PAC_Numero FLOAT
-    );
-
     -- DECLARE @sexoBiologicoLegacy CHAR(1) = (SELECT CASE @IdSexoBiologico
     --     WHEN 1 THEN 'M'
     --     WHEN 2 THEN 'F'
     --     ELSE 
     -- END);
 
-
+    DECLARE @numeroPaciente FLOAT = 1 + ISNULL(
+        (SELECT MAX(PAC_PAC_Numero) FROM [dbo].[PAC_Paciente]), 0);
     
     INSERT INTO [dbo].[PAC_Paciente] (
+        [PAC_PAC_Numero],
         [PAC_PAC_Nombre],
         [PAC_PAC_ApellPater],
         [PAC_PAC_ApellMater],
@@ -57,8 +55,8 @@ BEGIN
         [PerteneceAPuebloAfrodescendiente],
         [IdReligion]
     )
-    OUTPUT INSERTED.PAC_PAC_Numero INTO @resultado
     VALUES (
+        @numeroPaciente,
         @Nombre,
         @ApellidoPaterno,
         @ApellidoMaterno,
@@ -75,5 +73,5 @@ BEGIN
         @IdReligion
     );
 
-    SELECT PAC_PAC_Numero AS 'numero_paciente' FROM @resultado;
+    SELECT @numeroPaciente AS 'numero_paciente';
 END

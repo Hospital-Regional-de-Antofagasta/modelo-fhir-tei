@@ -19,7 +19,7 @@ BEGIN
         WHERE tid.[Codigo] = @CodigoTipoIdentificador
     )
     BEGIN
-        RAISERROR('El tipo de identificador ingresado no existe.', 16, 1)
+        RAISERROR('El tipo de identificador ingresado no existe.', 16, 50)
         RETURN 1;
     END
 
@@ -34,19 +34,19 @@ BEGIN
         IF (@CodigoTipoIdentificador <> @CODIGO_TIPO_IDENTIFICADOR_RUT 
             AND @CodigoTipoIdentificador <> @CODIGO_TIPO_IDENTIFICADOR_RUT_PROVISORIO)
         BEGIN
-            RAISERROR('No se pudo encontrar al paciente mediante el identificador ingresado', 16, 1)
+            RAISERROR('No se pudo encontrar al paciente mediante el identificador ingresado', 16, 44)
             RETURN 1;
         END
 
         DECLARE @posibleNumeroPaciente FLOAT = (
-            SELECT TOP (1) 1
+            SELECT TOP (1) pac.[PAC_PAC_Numero]
             FROM [dbo].[PAC_Paciente] pac
             WHERE UPPER(pac.[PAC_PAC_Rut]) = UPPER(@ValorIdentificador)
         );
 
         IF (@posibleNumeroPaciente IS NULL)
         BEGIN
-            RAISERROR('No se pudo encontrar al paciente mediante el identificador ingresado, ni mediante su RUT legacy.', 16, 1)
+            RAISERROR('No se pudo encontrar al paciente mediante el identificador ingresado, ni mediante su RUT legacy.', 16, 44)
             RETURN 1;
         END
 
@@ -64,4 +64,5 @@ BEGIN
     WHERE
         ip.[IdTipo] = @CodigoTipoIdentificador AND
         ip.[Valor] = @ValorIdentificador
+    RETURN 0;
 END

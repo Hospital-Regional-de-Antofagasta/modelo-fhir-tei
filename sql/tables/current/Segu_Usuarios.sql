@@ -13,4 +13,5 @@ CREATE TABLE [dbo].[Segu_Usuarios](
 DECLARE @user VARCHAR(10) = SUSER_NAME();
 
 INSERT INTO [dbo].[Segu_Usuarios] VALUES (@user);
+INSERT INTO [dbo].[Segu_Usuarios] VALUES ('system');
 

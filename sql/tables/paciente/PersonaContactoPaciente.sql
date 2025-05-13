@@ -10,8 +10,8 @@ CREATE TABLE [dbo].[PersonaContactoPaciente]
 
   Rut VARCHAR(10) NULL,
 
-  /* https://hl7chile.cl/fhir/ig/clcore/1.9.2/StructureDefinition-IdContacto.html */
-  FHIR_Identifier VARCHAR(MAX) NULL,
+  -- /* https://hl7chile.cl/fhir/ig/clcore/1.9.2/StructureDefinition-IdContacto.html */
+  -- FHIR_Identifier VARCHAR(MAX) NULL,
 
   [CreatedBy] [VARCHAR](10) NOT NULL,
   [CreatedAt] DATETIME NOT NULL DEFAULT GETDATE()
