@@ -129,3 +129,20 @@ Por ejemplo, está pendiente determinar como se manejará el proceso para las so
   - El numero de pasaporte
   - El RUT de la madre (en caso de haber ingresado una como familiar)
   - "Número de Ficha Clínica Sistema Local" (número de ficha), ¿pero como se distingue del mismo tipo de identificador en otro establecimiento?
+
+## TODO
+
+### Atender
+- Modificar SICLOPE para exigir uno o más diagnosticos CIE10 (https://interoperabilidad.minsal.cl/fhir/ig/tei/0.2.1/ValueSet-VSTerminologiasDiag.html)
+- Modificar SICLOPE para exigir cero o más solicitudes de exámenes LOINC (https://interoperabilidad.minsal.cl/fhir/ig/tei/0.2.1/ValueSet-CodigoExamen.html)
+- ❔ Si en la atención primaria se determina que el paciente padece de una intolerancia/alergia, es requerido que esta misma información sea enviada en el evento "atender"?
+- ❔ si en la atención primaria se solicitaron examenes, es requerido que estén los resultados en 'observación resultado de examen' en el evento "atender"?
+
+
+
+
+
+
+
+
+
