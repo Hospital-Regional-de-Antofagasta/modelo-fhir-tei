@@ -1,9 +1,19 @@
 import "dotenv/config";
-import { describe, expect, test, beforeAll, afterAll, it } from "@jest/globals";
+import { expect, beforeAll, afterAll, it } from "@jest/globals";
 import { getDatabaseConnection } from "../utils.js";
 import mssql from "mssql";
 import fs from "fs";
 import path from "path";
+import { extraerBundleIniciarEnriquecido } from "./extraer-bundle-iniciar-enriquecido.js";
+import {
+  crearIdentificadorPaciente,
+  crearPaciente,
+  obtenerIdentidadGeneroDadoCodigoDEIS,
+  obtenerNumeroPacienteDadoIdentificador,
+  obtenerPaisDadoCodigoDEIS,
+  obtenerSexoBiologicoDadoCodigoFHIR,
+  obtenerTipoIdentificadorPersonaDadoCodigoFHIR,
+} from "./db.js";
 
 function obtenerBundleIniciarEnriquecido() {
   const bundleIniciarEnriquecido = fs.readFileSync(
@@ -14,34 +24,6 @@ function obtenerBundleIniciarEnriquecido() {
   return JSON.parse(bundleIniciarEnriquecido);
 }
 const bundleIniciarEnriquecido = obtenerBundleIniciarEnriquecido();
-
-async function obtenerNumeroPacienteDadoIdentificador(
-  /** @type {import("mssql").Transaction} */ tran,
-  /** @type {string}  */ codigoTipoIdentificador,
-  /** @type {string}  */ valorIdentificador
-) {
-  try {
-    const { recordset: resultadoObtenerNumeroPaciente } = await tran
-      .request()
-      .input("CodigoTipoIdentificador", codigoTipoIdentificador)
-      .input("ValorIdentificador", valorIdentificador)
-      .execute("ObtenerNumeroPacienteDadoIdentificador");
-
-    return {
-      numero_paciente: resultadoObtenerNumeroPaciente[0]["numero_paciente"],
-      id_identificador: resultadoObtenerNumeroPaciente[0]["id_identificador"],
-    };
-  } catch (error) {
-    if (
-      error instanceof mssql.MSSQLError &&
-      error.code === "EREQUEST" &&
-      error["state"] === 44
-    ) {
-      return null;
-    }
-    throw error;
-  }
-}
 
 /** @type {import("mssql").ConnectionPool | undefined} */
 let pool = undefined;
@@ -63,179 +45,87 @@ afterAll(async () => {
   }
 });
 
-async function obtenerIdentificadorSexoBiologico(
-  /** @type {import("mssql").Transaction} */ tran,
-  /** @type {string}  */ codigoFHIR
-) {
-  const mapFHIRToDEIS = {
-    male: "1",
-    female: "2",
-    other: "3",
-    unknown: "5",
-  };
+it("Debe extraer los datos del paciente desde el bundle iniciar enriquecido", async () => {
+  expect.hasAssertions();
 
-  const codigo = mapFHIRToDEIS[codigoFHIR];
+  if (!pool) {
+    throw new Error("No hay conexión a la base de datos");
+  }
 
-  return (
-    await tran
-      .request()
-      .input("Codigo", codigo)
-      .query(
-        `SELECT Id AS 'id' FROM [dbo].[TAB_DEIS_SexoBiologico] WHERE Codigo = @Codigo;`
-      )
-  ).recordset[0].id;
-}
-
-async function obtenerIdentificadorIdentidadGenero(
-  /** @type {import("mssql").Transaction} */ tran,
-  /** @type {string}  */ codigoFHIR
-) {
-  return (
-    await tran
-      .request()
-      .input("Codigo", codigoFHIR)
-      .query(
-        `SELECT Id AS 'id' FROM [dbo].[TAB_DEIS_IdentidadGenero] WHERE Codigo = @Codigo;`
-      )
-  ).recordset[0].id;
-}
-
-async function obtenerIdentificadorPais(
-  /** @type {import("mssql").Transaction} */ tran,
-  /** @type {string}  */ codigoFHIR
-) {
-  return (
-    await tran
-      .request()
-      .input("Codigo", codigoFHIR)
-      .query(
-        `SELECT Id AS 'id' FROM [dbo].[TAB_DEIS_Pais] WHERE Codigo = @Codigo;`
-      )
-  ).recordset[0].id;
-}
-
-async function extraerPacienteDesdeBundle(
-  /** @type {import("mssql").Transaction} */ tran,
-  /** @type {object} */ bundle
-) {
-  const { resource: paciente } = bundle.entry.find(
-    (e) => e.resource.resourceType === "Patient"
+  const { paciente } = await extraerBundleIniciarEnriquecido(
+    pool,
+    bundleIniciarEnriquecido
   );
 
-  const name = paciente.name.find((n) => n.use === "official");
+  const { id: idIdentidadGeneroNoRevelada } =
+    await obtenerIdentidadGeneroDadoCodigoDEIS(pool, "7");
 
-  const codigoIdentidadGenero = paciente.extension.find(
-    (e) =>
-      e.url ===
-      "https://hl7chile.cl/fhir/ig/clcore/StructureDefinition/IdentidadDeGenero"
-  ).valueCodeableConcept.coding[0].code;
+  const { id: idSexoBiologicoMujer } = await obtenerSexoBiologicoDadoCodigoFHIR(
+    pool,
+    "female"
+  );
 
-  const codigoNacionalidad = paciente.extension.find(
-    (e) =>
-      e.url ===
-      "https://hl7chile.cl/fhir/ig/clcore/StructureDefinition/CodigoPaises"
-  ).valueCodeableConcept.coding[0].code;
+  const { id: idPaisChile } = await obtenerPaisDadoCodigoDEIS(pool, "152");
 
-  const codigoPaisOrigen = paciente.extension.find(
-    (e) =>
-      e.url ===
-      "https://interoperabilidad.minsal.cl/fhir/ig/tei/StructureDefinition/PaisOrigenMPI"
-  ).valueCodeableConcept.coding[0].code;
+  const { id: idTipoIdentificadorRut } =
+    await obtenerTipoIdentificadorPersonaDadoCodigoFHIR(pool, "01");
 
-  const pertenecientePuebloOriginario = paciente.extension.find(
-    (e) =>
-      e.url ===
-      "https://interoperabilidad.minsal.cl/fhir/ig/tei/StructureDefinition/PueblosOriginariosPerteneciente"
-  ).valueBoolean;
+  expect(paciente).toBeDefined();
+  expect(paciente.nombre).toBe("Marisol");
+  expect(paciente.nombre_social).toBeNull();
+  expect(paciente.apellido_paterno).toBe("Pardo");
+  expect(paciente.apellido_materno).toBe("Cabrera");
+  expect(paciente.fecha_nacimiento).toBe("1961-05-25");
+  expect(paciente.id_identidad_genero).toBe(idIdentidadGeneroNoRevelada);
+  expect(paciente.id_sexo_biologico).toBe(idSexoBiologicoMujer);
+  expect(paciente.id_nacionalidad).toBe(idPaisChile);
+  expect(paciente.id_pais_origen).toBe(idPaisChile);
+  expect(paciente.pertenece_a_pueblo_afrodescendiente).toBe(false);
+  expect(paciente.pertenece_a_pueblo_originario).toBe(false);
+  expect(paciente.id_religion).toBeNull();
+  expect(paciente.id_pueblo_originario).toBeNull();
 
-  const pertenecientePuebloAfrodescendiente = paciente.extension.find(
-    (e) =>
-      e.url ===
-      "https://interoperabilidad.minsal.cl/fhir/ig/tei/StructureDefinition/PueblosAfrodescendiente"
-  ).valueBoolean;
-
-  return {
-    nombre: name.given.join(" "),
-    apellido_paterno: name.family,
-    apellido_materno: name._family.extension[0].valueString,
-
-    fecha_nacimiento: paciente.birthDate,
-
-    id_sexo_biologico: await obtenerIdentificadorSexoBiologico(
-      tran,
-      paciente.gender
-    ),
-    id_identidad_genero: await obtenerIdentificadorIdentidadGenero(
-      tran,
-      codigoIdentidadGenero
-    ),
-    id_religion: null,
-    id_nacionalidad: await obtenerIdentificadorPais(tran, codigoNacionalidad),
-    id_pais_origen: await obtenerIdentificadorPais(tran, codigoPaisOrigen),
-    pertenece_a_pueblo_originario: pertenecientePuebloOriginario,
-    pertenece_a_pueblo_afrodescendiente: pertenecientePuebloAfrodescendiente,
-    id_pueblo_originario: null,
-  };
-}
+  expect(paciente.identificadores).toHaveLength(1);
+  expect(paciente.identificadores[0].id_pais_emisor_documento).toBe(
+    idPaisChile
+  );
+  expect(paciente.identificadores[0].id_tipo_identificador).toBe(
+    idTipoIdentificadorRut
+  );
+  expect(paciente.identificadores[0].valor).toBe("9640474-3");
+});
 
 it("Debe crear un paciente si no lo encuentra", async () => {
   expect.hasAssertions();
 
   const tran = new mssql.Transaction(pool);
-  try {
-    await tran.begin();
+  await tran.begin();
 
-    const paciente = await extraerPacienteDesdeBundle(
+  try {
+    const { paciente } = await extraerBundleIniciarEnriquecido(
       tran,
       bundleIniciarEnriquecido
     );
 
-    expect(paciente).not.toBeNull();
+    const identificadorPaciente = paciente.identificadores[0];
 
-    const resultadoObtenerNumeroPaciente =
-      await obtenerNumeroPacienteDadoIdentificador(tran, "01", "11867161-9");
-
-    expect(resultadoObtenerNumeroPaciente).toBeNull();
-
-    const { recordset: resultadoCrearPaciente } = await tran
-      .request()
-      .input("Nombre", mssql.VarChar(40), paciente.nombre)
-      .input("ApellidoPaterno", mssql.VarChar(20), paciente.apellido_paterno)
-      .input("ApellidoMaterno", mssql.VarChar(20), paciente.apellido_materno)
-      .input("FechaNacimiento", mssql.DateTime, paciente.fecha_nacimiento)
-      .input("IdSexoBiologico", mssql.TinyInt, paciente.id_sexo_biologico)
-      .input("IdIdentidadGenero", mssql.TinyInt, paciente.id_identidad_genero)
-      .input("IdNacionalidad", mssql.SmallInt, paciente.id_nacionalidad)
-      .input("IdPaisOrigen", mssql.SmallInt, paciente.id_pais_origen)
-      .input("IdReligion", mssql.TinyInt, paciente.id_religion)
-      .input(
-        "PerteneceAPuebloOriginario",
-        mssql.Bit,
-        paciente.pertenece_a_pueblo_originario
+    await expect(
+      obtenerNumeroPacienteDadoIdentificador(
+        tran,
+        identificadorPaciente.id_tipo_identificador,
+        identificadorPaciente.valor
       )
-      .input(
-        "PerteneceAPuebloAfrodescendiente",
-        mssql.Bit,
-        paciente.pertenece_a_pueblo_afrodescendiente
-      )
-      .input("IdPuebloOriginario", mssql.TinyInt, paciente.id_pueblo_originario)
-      .execute("CrearPaciente");
+    ).rejects.toHaveProperty("state", 44);
 
-    expect(resultadoCrearPaciente).toHaveLength(1);
+    const { numero_paciente } = await crearPaciente(tran, paciente);
 
-    const numeroPaciente = resultadoCrearPaciente[0].numero_paciente;
-    expect(numeroPaciente).toBe(1);
+    expect(numero_paciente).toBeDefined();
 
-    await tran
-      .request()
-      .input("NumeroPaciente", mssql.Float, numeroPaciente)
-      .input("IdTipo", mssql.TinyInt, 1)
-      .input("IdUso", mssql.TinyInt, null)
-      .input("Valor", mssql.VarChar(64), "11867161-9")
-      .input("IdPaisEmisorDocumento", mssql.SmallInt, 1)
-      .input("CreatedBy", mssql.VarChar(10), "system")
-      .execute("CrearIdentificadorPaciente");
-
+    await crearIdentificadorPaciente(
+      tran,
+      numero_paciente,
+      identificadorPaciente
+    );
     await tran.rollback();
   } catch (error) {
     await tran.rollback();

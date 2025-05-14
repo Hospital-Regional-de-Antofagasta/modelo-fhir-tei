@@ -1,38 +1,46 @@
 /**
     Obtiene el numero de paciennte dado un identificador del paciente.
-    Si el tipo de identificador es RUT o RUT PROVISORIO y no se encuentra el identificador,
-    se intentará buscar al paciente directamente por su RUT "legacy".
+    -- Si el tipo de identificador es RUT o RUT PROVISORIO y no se encuentra el identificador,
+    -- se intentará buscar al paciente directamente por su RUT "legacy".
 */
 
 CREATE OR ALTER PROCEDURE ObtenerNumeroPacienteDadoIdentificador
-    @CodigoTipoIdentificador CHAR(2),
+    @IdTipoIdentificador TINYINT,
     @ValorIdentificador VARCHAR(64)
 AS
 BEGIN
     DECLARE
         @CODIGO_TIPO_IDENTIFICADOR_RUT CHAR(2) = '01',
         @CODIGO_TIPO_IDENTIFICADOR_RUT_PROVISORIO CHAR(2) = '02';
-
+    
     IF NOT EXISTS (
         SELECT TOP (1) 1
         FROM [dbo].[TAB_FHIR_TipoIdentificadorPersona] tid
-        WHERE tid.[Codigo] = @CodigoTipoIdentificador
+        WHERE tid.[Id] = @IdTipoIdentificador
     )
     BEGIN
         RAISERROR('El tipo de identificador ingresado no existe.', 16, 50)
         RETURN 1;
     END
 
+    DECLARE @codigoTipoIdentificador CHAR(2) = (
+        SELECT TOP (1) tid.[Codigo]
+        FROM [dbo].[TAB_FHIR_TipoIdentificadorPersona] tid
+        WHERE tid.[Id] = @IdTipoIdentificador
+    );
+
     DECLARE @idIdentificadorPaciente UNIQUEIDENTIFIER = (
         SELECT TOP (1) ip.[Id]
         FROM [dbo].[IdentificadorPaciente] ip
-        WHERE ip.[IdTipo] = @CodigoTipoIdentificador AND ip.[Valor] = @ValorIdentificador
+        WHERE
+            ip.[IdTipo] = @IdTipoIdentificador
+            AND ip.[Valor] = @ValorIdentificador
     )
 
     IF (@idIdentificadorPaciente IS NULL)
     BEGIN
-        IF (@CodigoTipoIdentificador <> @CODIGO_TIPO_IDENTIFICADOR_RUT 
-            AND @CodigoTipoIdentificador <> @CODIGO_TIPO_IDENTIFICADOR_RUT_PROVISORIO)
+        IF (@codigoTipoIdentificador <> @CODIGO_TIPO_IDENTIFICADOR_RUT 
+            AND @codigoTipoIdentificador <> @CODIGO_TIPO_IDENTIFICADOR_RUT_PROVISORIO)
         BEGIN
             RAISERROR('No se pudo encontrar al paciente mediante el identificador ingresado', 16, 44)
             RETURN 1;
@@ -62,7 +70,6 @@ BEGIN
     FROM
         [dbo].[IdentificadorPaciente] ip
     WHERE
-        ip.[IdTipo] = @CodigoTipoIdentificador AND
-        ip.[Valor] = @ValorIdentificador
+        ip.[Id] = @idIdentificadorPaciente
     RETURN 0;
 END

@@ -1,16 +1,15 @@
 CREATE OR ALTER PROCEDURE GuardarBundleIniciarEnriquecido
     @IdSolicitudInterconsulta UNIQUEIDENTIFIER,
-    @EstablecimientoSolicitanteDTO VARCHAR(MAX),
-    @PrestadorSolicitanteDTO VARCHAR(MAX)
+    @BundleIniciarEnriquecido VARCHAR(MAX)
 AS
 BEGIN
-    INSERT INTO [dbo].[BundleIniciarEnriquecido] (
+    INSERT INTO [dbo].[FHIR_BundleIniciarEnriquecido] (
         IdSolicitudInterconsulta,
-        EstablecimientoSolicitanteDTO,
-        PrestadorSolicitanteDTO
+        BundleOriginal,
+        CreatedAt
     ) VALUES (
         @IdSolicitudInterconsulta,
-        @EstablecimientoSolicitanteDTO,
-        @PrestadorSolicitanteDTO
+        @BundleIniciarEnriquecido,
+        GETDATE()
     );
 END

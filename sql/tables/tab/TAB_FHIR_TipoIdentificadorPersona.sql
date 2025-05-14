@@ -3,7 +3,7 @@
 CREATE TABLE [dbo].[TAB_FHIR_TipoIdentificadorPersona] (
     Id TINYINT CONSTRAINT PK_FHIR_TIPOIDENTIFICADORPERSONA PRIMARY KEY (Id),
     Codigo CHAR(2) NOT NULL UNIQUE,
-    Nombre VARCHAR(50) NOT NULL,
+    Texto VARCHAR(50) NOT NULL,
     Descripcion VARCHAR(100) NOT NULL,
 
     [CreatedBy] [VARCHAR](10) NOT NULL DEFAULT SUSER_NAME(),
@@ -11,7 +11,7 @@ CREATE TABLE [dbo].[TAB_FHIR_TipoIdentificadorPersona] (
 );
 
 INSERT INTO [dbo].[TAB_FHIR_TipoIdentificadorPersona]
-    (Id, Codigo, Nombre, Descripcion)
+    (Id, Codigo, Texto, Descripcion)
 VALUES
     (1, '01', 'RUN', 'Rol Único Nacional'),
     (2, '02', 'RUN Provisorio', 'RUN provisorio (Artículo 44)'),
