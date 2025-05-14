@@ -20,6 +20,27 @@ type PacienteExtraido = {
   id_pueblo_originario: string;
 };
 
+type SolicitudInterconsultaExtraida = {
+  numero_paciente: number;
+  id_motivo_cierre_interconsulta: string;
+  requiere_examen: boolean;
+  es_atencion_preferente: boolean;
+  tiene_resolutividad_aps: boolean;
+  referencia_origen: string;
+  fundamento_priorizacion: string;
+  id_especialidad_destino: string;
+  id_sub_especialidad_destino: string | null;
+  motivo_no_pertinencia: string;
+  modalidad_atencion: string;
+  prioridad: string;
+  referencia_destino: string;
+  motivo_derivacion: string;
+  fhir_id: string;
+  fhir_identifier_minsal: string;
+  fhir_identifier_origin: string;
+  created_by: string;
+};
+
 type TransactionOrConnectionPool =
   | import("mssql").Transaction
   | import("mssql").ConnectionPool;

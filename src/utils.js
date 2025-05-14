@@ -51,3 +51,15 @@ export function getDatabaseConnection({
     },
   });
 }
+
+/**
+ * @returns {object}
+ */
+export function cargarBundleIniciarEnriquecido() {
+  const bundleIniciarEnriquecido = fs.readFileSync(
+    path.join(".", "src", "bundle-iniciar-enriquecido.json"),
+    "utf-8"
+  );
+
+  return JSON.parse(bundleIniciarEnriquecido);
+}
