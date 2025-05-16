@@ -14,10 +14,10 @@ type PacienteExtraido = {
   id_identidad_genero: string;
   id_nacionalidad: string;
   id_pais_origen: string;
-  id_religion: string;
+  id_religion: string | null;
   pertenece_a_pueblo_originario: boolean;
-  pertenece_a_pueblo_afrodescendiente: boolean;
-  id_pueblo_originario: string;
+  pertenece_a_pueblo_afrodescendiente: boolean | null;
+  id_pueblo_originario: string | null;
 };
 
 type SolicitudInterconsultaExtraida = {
@@ -29,8 +29,7 @@ type SolicitudInterconsultaExtraida = {
   referencia_origen: string;
   fundamento_priorizacion: string;
   id_especialidad_destino: string;
-  id_sub_especialidad_destino: string | null;
-  motivo_no_pertinencia: string;
+  id_subespecialidad_destino: string | null;
   modalidad_atencion: string;
   prioridad: string;
   referencia_destino: string;

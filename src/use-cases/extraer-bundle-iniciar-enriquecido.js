@@ -29,7 +29,7 @@ function extraerSliceDesdeExtension(extension, url) {
 /**
  * @param {TransactionOrConnectionPool} tran
  * @param {{ resource: { name: object, identifier: object[], extension: object[], birthDate: string, gender: string }}} slice
- * @returns {Promise<object>}
+ * @returns {Promise<PacienteExtraido>}
  */
 async function extraerPacienteDesdeSlice(tran, slice) {
   const { name, identifier, extension, birthDate, gender } = slice.resource;
@@ -125,18 +125,51 @@ async function extraerPacienteDesdeSlice(tran, slice) {
     id_pais_origen: (await obtenerPaisDadoCodigoDEIS(tran, codigoNacionalidad))
       .id,
     pertenece_a_pueblo_originario: pertenecientePuebloOriginario,
-    pertenece_a_pueblo_afrodescendiente: pertenecientePuebloAfrodescendiente,
+    pertenece_a_pueblo_afrodescendiente:
+      pertenecientePuebloAfrodescendiente ?? null,
     id_pueblo_originario: null,
   };
 }
 
 /**
  * @param {TransactionOrConnectionPool} tran
+ * @param {{ fullUrl: string; resource: Record<string, any>}} slice
+ * @returns {Promise<Partial<SolicitudInterconsultaExtraida>>}
+ */
+async function extraerSolicitudInterconsultaDesdeSlice(tran, slice) {
+  const { id, identifier, category } = slice.resource;
+
+  const idMinsal = identifier.find(
+    (i) => i.system === "http://minsal.cl/MINSAL"
+  ).value;
+
+  const idRayen = identifier.find(
+    (i) => i.system === "http://minsal.cl/RAYEN"
+  ).value;
+
+  const codigoModalidadAtencion = category[0]?.coding[0].code ?? null;
+
+  return {
+    fhir_id: id,
+    fhir_identifier_minsal: idMinsal,
+    fhir_identifier_origin: idRayen,
+
+    created_by: "system",
+  };
+}
+
+/**
+ * @param {TransactionOrConnectionPool} tran
  * @param {object} bundle
- * @returns {Promise<{ paciente: PacienteExtraido }>}
+ * @returns {Promise<{ paciente: PacienteExtraido, solicitud_interconsulta: Partial<SolicitudInterconsultaExtraida> }>}
  */
 export async function extraerBundleIniciarEnriquecido(tran, bundle) {
   const slicePaciente = extraerSlicesDesdeBundle(bundle, "PatientLE")[0];
+
+  const sliceSolicitudInterconsulta = extraerSlicesDesdeBundle(
+    bundle,
+    "ServiceRequestLE"
+  )[0];
   // const sliceAtencionInicial = extraerSlicesDesdeBundle(
   //   bundle,
   //   "EncounterIniciarLE"
@@ -157,5 +190,9 @@ export async function extraerBundleIniciarEnriquecido(tran, bundle) {
   // slicesObservacionResultadoExamen, slicesAlergiaOIntolerancia, slicesSolicitudExamen
   return {
     paciente: await extraerPacienteDesdeSlice(tran, slicePaciente),
+    solicitud_interconsulta: await extraerSolicitudInterconsultaDesdeSlice(
+      tran,
+      sliceSolicitudInterconsulta
+    ),
   };
 }

@@ -202,3 +202,74 @@ ADD
 
 
 
+-- ****
+
+
+ALTER TABLE [dbo].[ListaEspera_Interconsulta] ADD
+
+CONSTRAINT FK_LE_INTERCONSULTA_PACIENTE FOREIGN KEY (NumeroPaciente)
+    REFERENCES [dbo].[PAC_Paciente]([PAC_PAC_Numero]),
+
+CONSTRAINT FK_LE_INTERCONSULTA_SISTEMAORIGEN FOREIGN KEY (IdSistemaOrigen)
+    REFERENCES [dbo].[ListaEspera_TAB_SistemaOrigen](Id),
+
+CONSTRAINT FK_LE_INTERCONSULTA_ESPECIALIDADORIGEN FOREIGN KEY (IdEspecialidadOrigen)
+    REFERENCES [dbo].[PRLE_ESPECIALIDADES](Id),
+
+CONSTRAINT FK_LE_INTERCONSULTA_POLICLINICOORIGEN FOREIGN KEY (CodigoPoliclinicoOrigen)
+    REFERENCES [dbo].[SER_Servicios]([SER_SER_Codigo]),
+
+CONSTRAINT FK_LE_INTERCONSULTA_NOMINA FOREIGN KEY (NumeroFolioNominaOrigen)
+    REFERENCES [dbo].[AFC_Nomina]([NOM_Folio]),
+
+CONSTRAINT FK_LE_INTERCONSULTA_ESTABLECIMIENTOORIGEN FOREIGN KEY (IdEstablecimientoOrigen)
+    REFERENCES [dbo].[ListaEspera_TAB_Establecimiento](Id),
+
+CONSTRAINT FK_LE_INTERCONSULTA_ESTABLEDESTINO FOREIGN KEY (IdEstablecimientoDestino)
+    REFERENCES [dbo].[ListaEspera_TAB_Establecimiento](Id),
+
+CONSTRAINT FK_LE_INTERCONSULTA_ESPECIALIDADDESTINO FOREIGN KEY (IdEspecialidadDestino)
+    REFERENCES [dbo].[PRLE_ESPECIALIDADES](Id),
+
+CONSTRAINT FK_LE_INTERCONSULTA_DIAGNOSTICO FOREIGN KEY (IdDiagnostico)
+    REFERENCES [dbo].[ListaEspera_TAB_Diagnostico]([Id]),
+
+CONSTRAINT FK_LE_INTERCONSULTA_ESTADODIAGNOSTICO FOREIGN KEY (IdEstadoDiagnostico)
+    REFERENCES [dbo].[ListaEspera_TAB_EstadoDiagnostico](Id),
+
+CONSTRAINT FK_LE_INTERCONSULTA_MOTIVODERIVACION FOREIGN KEY (IdMotivoDerivacion)
+    REFERENCES [dbo].[ListaEspera_TAB_MotivoDerivacion](Id),
+
+CONSTRAINT FK_LE_INTERCONSULTA_TIPOPRESTACION FOREIGN KEY (IdTipoPrestacion)
+    REFERENCES [dbo].[ListaEspera_TAB_TipoPrestacion](Id),
+
+CONSTRAINT FK_LE_INTERCONSULTA_PRIORIDAD FOREIGN KEY (IdPrioridad)
+    REFERENCES [dbo].[ListaEspera_TAB_PrioridadCaso]([Id]),
+
+CONSTRAINT FK_LE_INTERCONSULTA_USUARIO_PRIORIZADOR FOREIGN KEY (PrioritizedBy)
+    REFERENCES [dbo].[Segu_Usuarios]([Segu_Usr_Cuenta]),
+
+CONSTRAINT FK_LE_INTERCONSULTA_CAUSASALIDA FOREIGN KEY (IdCausalSalida)
+    REFERENCES [dbo].[TAB_FHIR_MotivoCierreInterconsulta]([Id]),
+
+CONSTRAINT FK_LE_INTERCONSULTA_MODALIDADATENCION FOREIGN KEY (IdModalidadAtencion)
+    REFERENCES [dbo].[ListaEspera_TAB_ModalidadAtencion]([Id]),
+
+CONSTRAINT FK_LE_INTERCONSULTA_USUARIO FOREIGN KEY (CreatedBy)
+    REFERENCES [dbo].[Segu_Usuarios]([Segu_Usr_Cuenta]),
+
+CONSTRAINT FK_LE_INTERCONSULTA_PROFESIONALORIGEN FOREIGN KEY ([RutProfesionalOrigen], [CodigoTipoProfesionalOrigen], [ProcedenciaProfesionalOrigen])
+    REFERENCES [dbo].[SER_Profesiona]([SER_PRO_Rut],[SER_PRO_Tipo],[SER_PRO_Procedencia])
+
+
+
+ALTER TABLE [dbo].[ListaEspera_EstadoInterconsulta] ADD
+CONSTRAINT [FK_LE_ESTADOINTERCONSULTA_ESTADO] FOREIGN KEY([IdEstado])
+    REFERENCES [dbo].[ListaEspera_TAB_EstadoInterconsulta] ([Id]),
+
+CONSTRAINT [FK_LE_ESTADOINTERCONSULTA_INTERCONSULTA] FOREIGN KEY([IdInterconsulta])
+    REFERENCES [dbo].[ListaEspera_Interconsulta] ([Id]),
+
+CONSTRAINT [FK_LE_ESTADOINTERCONSULTA_USUARIO] FOREIGN KEY([CreatedBy])
+    REFERENCES [dbo].[Segu_Usuarios] ([Segu_Usr_Cuenta])
+

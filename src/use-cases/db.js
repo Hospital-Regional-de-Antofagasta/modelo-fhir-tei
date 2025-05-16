@@ -195,105 +195,66 @@ export async function crearSolicitudInterconsulta(
   tran,
   solicitudInterconsultaExtraida
 ) {
+  const {
+    numero_paciente,
+    id_motivo_cierre_interconsulta,
+    requiere_examen,
+    es_atencion_preferente,
+    tiene_resolutividad_aps,
+    referencia_origen,
+    fundamento_priorizacion,
+    id_especialidad_destino,
+    id_subespecialidad_destino,
+    modalidad_atencion,
+    motivo_derivacion,
+    prioridad,
+    referencia_destino,
+    fhir_id,
+    fhir_identifier_minsal,
+    fhir_identifier_origin,
+    created_by,
+  } = solicitudInterconsultaExtraida;
+
   const resultado = (
     await tran
       .request()
-      .input(
-        "NumeroPaciente",
-        mssql.Float,
-        solicitudInterconsultaExtraida.paciente.numero_paciente
-      )
+      .input("NumeroPaciente", mssql.Float, numero_paciente)
       .input(
         "IdMotivoCierreInterconsulta",
         mssql.TinyInt,
-        solicitudInterconsultaExtraida.id_motivo_cierre_interconsulta
+        id_motivo_cierre_interconsulta
       )
-      .input(
-        "RequiereExamen",
-        mssql.Bit,
-        solicitudInterconsultaExtraida.requiere_examen
-      )
-      .input(
-        "EsAtencionPreferente",
-        mssql.Bit,
-        solicitudInterconsultaExtraida.es_atencion_preferente
-      )
-      .input(
-        "TieneResolutividadAPS",
-        mssql.Bit,
-        solicitudInterconsultaExtraida.tiene_resolutividad_aps
-      )
-      .input(
-        "ReferenciaOrigen",
-        mssql.VarChar(10),
-        solicitudInterconsultaExtraida.referencia_origen
-      )
+      .input("RequiereExamen", mssql.Bit, requiere_examen)
+      .input("EsAtencionPreferente", mssql.Bit, es_atencion_preferente)
+      .input("TieneResolutividadAPS", mssql.Bit, tiene_resolutividad_aps)
+      .input("ReferenciaOrigen", mssql.VarChar(10), referencia_origen)
       .input(
         "FundamentoPriorizacion",
         mssql.VarChar(250),
-        solicitudInterconsultaExtraida.fundamento_priorizacion
+        fundamento_priorizacion
       )
-      .input("Estado", mssql.VarChar(20), solicitudInterconsultaExtraida.estado)
-      .input(
-        "IdEspecialidadDestino",
-        mssql.SmallInt,
-        solicitudInterconsultaExtraida.id_especialidad_destino
-      )
+      .input("IdEspecialidadDestino", mssql.SmallInt, id_especialidad_destino)
       .input(
         "IdSubEspecialidadDestino",
         mssql.SmallInt,
-        solicitudInterconsultaExtraida.id_subespecialidad_destino
+        id_subespecialidad_destino
       )
-      .input(
-        "TipoPertinencia",
-        mssql.VarChar(20),
-        solicitudInterconsultaExtraida.tipo_pertinencia
-      )
-      .input(
-        "MotivoNoPertinencia",
-        mssql.VarChar(250),
-        solicitudInterconsultaExtraida.motivo_no_pertinencia
-      )
-      .input(
-        "ModalidadAtencion",
-        mssql.VarChar(20),
-        solicitudInterconsultaExtraida.modalidad_atencion
-      )
-      .input(
-        "Prioridad",
-        mssql.VarChar(20),
-        solicitudInterconsultaExtraida.prioridad
-      )
-      .input(
-        "ReferenciaDestino",
-        mssql.VarChar(32),
-        solicitudInterconsultaExtraida.referencia_destino
-      )
-      .input(
-        "MotivoDerivacion",
-        mssql.VarChar(20),
-        solicitudInterconsultaExtraida.motivo_derivacion
-      )
-      .input(
-        "FHIR_Id",
-        mssql.VarChar(64),
-        solicitudInterconsultaExtraida.fhir_id
-      )
+      .input("ModalidadAtencion", mssql.VarChar(20), modalidad_atencion)
+      .input("Prioridad", mssql.VarChar(20), prioridad)
+      .input("ReferenciaDestino", mssql.VarChar(32), referencia_destino)
+      .input("MotivoDerivacion", mssql.VarChar(20), motivo_derivacion)
+      .input("FHIR_Id", mssql.VarChar(64), fhir_id)
       .input(
         "FHIR_Identifier_MINSAL",
         mssql.VarChar(64),
-        solicitudInterconsultaExtraida.fhir_identifier_minsal
+        fhir_identifier_minsal
       )
       .input(
         "FHIR_Identifier_Origin",
         mssql.VarChar(64),
-        solicitudInterconsultaExtraida.fhir_identifier_origin
+        fhir_identifier_origin
       )
-      .input(
-        "CreatedBy",
-        mssql.VarChar(10),
-        solicitudInterconsultaExtraida.created_by
-      )
+      .input("CreatedBy", mssql.VarChar(10), created_by)
       .execute("CrearSolicitudInterconsulta")
   ).recordset[0];
 

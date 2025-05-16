@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { expect, beforeAll, afterAll, it } from "@jest/globals";
+import { expect, beforeAll, afterAll, it, describe } from "@jest/globals";
 import {
   getDatabaseConnection,
   cargarBundleIniciarEnriquecido,
@@ -34,52 +34,69 @@ afterAll(async () => {
   }
 });
 
-it("Debe extraer los datos del paciente desde el bundle iniciar enriquecido", async () => {
-  expect.hasAssertions();
+describe("Extraer bundle iniciar enriquecido", () => {
+  it("Debe extraer los datos del paciente", async () => {
+    expect.hasAssertions();
 
-  if (!pool) {
-    throw new Error("No hay conexión a la base de datos");
-  }
+    if (!pool) {
+      throw new Error("No hay conexión a la base de datos");
+    }
 
-  const { paciente } = await extraerBundleIniciarEnriquecido(
-    pool,
-    bundleIniciarEnriquecido
-  );
+    const { paciente } = await extraerBundleIniciarEnriquecido(
+      pool,
+      bundleIniciarEnriquecido
+    );
 
-  const { id: idIdentidadGeneroNoRevelada } =
-    await obtenerIdentidadGeneroDadoCodigoDEIS(pool, "7");
+    const { id: idIdentidadGeneroNoRevelada } =
+      await obtenerIdentidadGeneroDadoCodigoDEIS(pool, "7");
 
-  const { id: idSexoBiologicoMujer } = await obtenerSexoBiologicoDadoCodigoFHIR(
-    pool,
-    "female"
-  );
+    const { id: idSexoBiologicoMujer } =
+      await obtenerSexoBiologicoDadoCodigoFHIR(pool, "female");
 
-  const { id: idPaisChile } = await obtenerPaisDadoCodigoDEIS(pool, "152");
+    const { id: idPaisChile } = await obtenerPaisDadoCodigoDEIS(pool, "152");
 
-  const { id: idTipoIdentificadorRut } =
-    await obtenerTipoIdentificadorPersonaDadoCodigoFHIR(pool, "01");
+    const { id: idTipoIdentificadorRut } =
+      await obtenerTipoIdentificadorPersonaDadoCodigoFHIR(pool, "01");
 
-  expect(paciente).toBeDefined();
-  expect(paciente.nombre).toBe("Marisol");
-  expect(paciente.nombre_social).toBeNull();
-  expect(paciente.apellido_paterno).toBe("Pardo");
-  expect(paciente.apellido_materno).toBe("Cabrera");
-  expect(paciente.fecha_nacimiento).toBe("1961-05-25");
-  expect(paciente.id_identidad_genero).toBe(idIdentidadGeneroNoRevelada);
-  expect(paciente.id_sexo_biologico).toBe(idSexoBiologicoMujer);
-  expect(paciente.id_nacionalidad).toBe(idPaisChile);
-  expect(paciente.id_pais_origen).toBe(idPaisChile);
-  expect(paciente.pertenece_a_pueblo_afrodescendiente).toBe(false);
-  expect(paciente.pertenece_a_pueblo_originario).toBe(false);
-  expect(paciente.id_religion).toBeNull();
-  expect(paciente.id_pueblo_originario).toBeNull();
+    expect(paciente).toBeDefined();
+    expect(paciente.nombre).toBe("Marisol");
+    expect(paciente.nombre_social).toBeNull();
+    expect(paciente.apellido_paterno).toBe("Pardo");
+    expect(paciente.apellido_materno).toBe("Cabrera");
+    expect(paciente.fecha_nacimiento).toBe("1961-05-25");
+    expect(paciente.id_identidad_genero).toBe(idIdentidadGeneroNoRevelada);
+    expect(paciente.id_sexo_biologico).toBe(idSexoBiologicoMujer);
+    expect(paciente.id_nacionalidad).toBe(idPaisChile);
+    expect(paciente.id_pais_origen).toBe(idPaisChile);
+    expect(paciente.pertenece_a_pueblo_afrodescendiente).toBe(false);
+    expect(paciente.pertenece_a_pueblo_originario).toBe(false);
+    expect(paciente.id_religion).toBeNull();
+    expect(paciente.id_pueblo_originario).toBeNull();
 
-  expect(paciente.identificadores).toHaveLength(1);
-  expect(paciente.identificadores[0].id_pais_emisor_documento).toBe(
-    idPaisChile
-  );
-  expect(paciente.identificadores[0].id_tipo_identificador).toBe(
-    idTipoIdentificadorRut
-  );
-  expect(paciente.identificadores[0].valor).toBe("9640474-3");
+    expect(paciente.identificadores).toHaveLength(1);
+    expect(paciente.identificadores[0].id_pais_emisor_documento).toBe(
+      idPaisChile
+    );
+    expect(paciente.identificadores[0].id_tipo_identificador).toBe(
+      idTipoIdentificadorRut
+    );
+    expect(paciente.identificadores[0].valor).toBe("9640474-3");
+  });
+
+  it("Debe extraer los datos de la solicitud de interconsulta", async () => {
+    expect.hasAssertions();
+
+    if (!pool) throw new Error();
+
+    const { solicitud_interconsulta } = await extraerBundleIniciarEnriquecido(
+      pool,
+      bundleIniciarEnriquecido
+    );
+
+    expect(solicitud_interconsulta).toBeDefined();
+    expect(solicitud_interconsulta.fhir_identifier_minsal).toBe(
+      "e9d3bbfa-b2d6-4238-8bb1-96d36ebaba8c"
+    );
+    expect(solicitud_interconsulta.fhir_identifier_origin).toBe("13694385");
+  });
 });
