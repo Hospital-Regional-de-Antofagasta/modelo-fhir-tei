@@ -13,14 +13,6 @@ CREATE TABLE [dbo].[TAB_DEIS_Comuna](
 	[CreatedAt] DATETIME NOT NULL DEFAULT GETDATE(),
 ) ON [PRIMARY]
 
-EXEC sys.sp_addextendedproperty @name=N'Codigo', @value=N'C�digo DEIS de la comuna.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'TAB_DEIS_Comuna', @level2type=N'COLUMN',@level2name=N'Codigo'
-
-EXEC sys.sp_addextendedproperty @name=N'Texto', @value=N'Nombre de la comuna.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'TAB_DEIS_Comuna', @level2type=N'COLUMN',@level2name=N'Texto'
-
-EXEC sys.sp_addextendedproperty @name=N'IdProvincia', @value=N'Id de la provincia a la que pertenece la comuna.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'TAB_DEIS_Comuna', @level2type=N'COLUMN',@level2name=N'IdProvincia'
-
-EXEC sys.sp_addextendedproperty @name=N'TAB_DEIS_Comuna', @value=N'Esta tabla almacena las comunas de Chile.' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'TAB_DEIS_Comuna'
-
 INSERT INTO [dbo].[TAB_DEIS_Comuna]
 	([Id], [Codigo], [Texto], [IdProvincia])
 VALUES

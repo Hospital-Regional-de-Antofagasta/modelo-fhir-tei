@@ -1,10 +1,25 @@
 
 CREATE TABLE [dbo].[ListaEspera_Interconsulta](
-	[Id] UNIQUEIDENTIFIER DEFAULT(NEWID()) CONSTRAINT PK_LE_INTERCONSULTA PRIMARY KEY,
+	[Id] BIGINT NOT NULL IDENTITY(1, 1) CONSTRAINT PK_LE_INTERCONSULTA PRIMARY KEY,
 	[NumeroPaciente] [float] NULL,
-
 	[IdSistemaOrigen] BIGINT NOT NULL,
-	[IdOrigen] [VARCHAR](50) NULL,
+
+	-- Inicio nuevos campos
+	RequiereExamen BIT NULL,
+	EsAtencionPreferente BIT NULL,
+    TieneResolutividadAPS BIT NULL,
+	
+	IdReferenciaOrigen TINYINT NULL, -- FK ListaEspera_TAB_ReferenciaOrigen
+	IdReferenciaDestino TINYINT NULL, -- FK ListaEspera_TAB_ReferenciaDestino
+
+
+	[IdentificadorFHIR] [VARCHAR](64) NULL,
+	[IdentificadorMINSAL] [VARCHAR](100) NULL,
+	[IdentificadorOrigen] [VARCHAR](100) NULL,
+	[IdentificadorSIGTE] [VARCHAR](100) NULL,
+
+	-- Fin nuevos campos
+
 	[IdEspecialidadOrigen] [BIGINT] NULL,
 
 	[CodigoPoliclinicoOrigen] CHAR(8) NULL,
@@ -15,6 +30,7 @@ CREATE TABLE [dbo].[ListaEspera_Interconsulta](
 	[ProcedenciaProfesionalOrigen] [varchar](10) NULL,
 	[IdEstablecimientoDestino] [BIGINT] NOT NULL,
 	[IdEspecialidadDestino] [BIGINT] NULL,
+	[IdSubespecialidadDestino] [BIGINT] NULL, -- FK PRLE_ESPECIALIDADES
 	[IdProcedimientoIntervencionDestino] [BIGINT] NULL,
 
 	[IdDiagnostico] [BIGINT] NOT NULL,
@@ -25,8 +41,6 @@ CREATE TABLE [dbo].[ListaEspera_Interconsulta](
 	[ExamenesRealizados] [VARCHAR](256) NULL,
 	[FechaSolicitud] [DATETIME] NOT NULL,	
 	[IdTipoPrestacion] [BIGINT] NOT NULL,
-	[IdMinsal] [VARCHAR](100) NULL,
-	[IdSIGTE] [VARCHAR](100) NULL,
 	[CodigoProblemaSaludAuge] [int] NULL,
 	[IdPrioridad] [bigint] NULL,
 	[FundamentoPriorizacion] [VARCHAR](256) NULL,	
@@ -44,7 +58,6 @@ CREATE TABLE [dbo].[ListaEspera_Interconsulta](
         OR (([IdEspecialidadDestino] IS NOT NULL AND [IdProcedimientoIntervencionDestino] IS NULL))
     ),
 ) ON [PRIMARY]
-
 
 -- ALTER TABLE [dbo].[ListaEspera_Interconsulta] ADD
 

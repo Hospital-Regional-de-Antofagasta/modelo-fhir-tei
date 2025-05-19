@@ -4,7 +4,7 @@
     -- se intentará buscar al paciente directamente por su RUT "legacy".
 */
 
-CREATE OR ALTER PROCEDURE ObtenerNumeroPacienteDadoIdentificador
+CREATE OR ALTER PROCEDURE API_TEIM_ObtenerNumeroPacienteDadoIdentificador
     @IdTipoIdentificador TINYINT,
     @ValorIdentificador VARCHAR(64)
 AS

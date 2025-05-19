@@ -1,4 +1,4 @@
-CREATE OR ALTER PROCEDURE CrearPaciente
+CREATE OR ALTER PROCEDURE API_TEIM_CrearPaciente
     -- @Rut VARCHAR(10), -- Tiene default. Reemplazar luego.
     @Nombre VARCHAR(40),
     @ApellidoPaterno VARCHAR(20),

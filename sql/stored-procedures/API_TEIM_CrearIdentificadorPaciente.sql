@@ -1,4 +1,4 @@
-CREATE OR ALTER PROCEDURE CrearIdentificadorPaciente
+CREATE OR ALTER PROCEDURE API_TEIM_CrearIdentificadorPaciente
     @NumeroPaciente FLOAT,
     @IdTipo TINYINT,
     @IdUso TINYINT = NULL,
