@@ -4,6 +4,6 @@ BEGIN
     SELECT
         Id AS 'id',
         Codigo AS 'codigo',
-		Nombre AS 'texto'
+		Texto AS 'texto'
     FROM [dbo].[TAB_FHIR_TipoIdentificadorPersona]
 END
