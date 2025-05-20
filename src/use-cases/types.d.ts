@@ -1,8 +1,8 @@
 type PacienteExtraido = {
-  nombre: string | null;
-  apellido_paterno: string | null;
-  apellido_materno: string | null;
-  nombre_social: string | null;
+  nombre?: string;
+  apellido_paterno?: string;
+  apellido_materno?: string;
+  nombre_social?: string;
   identificadores: {
     id_tipo_identificador: string;
     id_uso: string;
@@ -14,10 +14,11 @@ type PacienteExtraido = {
   id_identidad_genero: string;
   id_nacionalidad: string;
   id_pais_origen: string;
-  id_religion: string | null;
+  id_religion?: string;
   pertenece_a_pueblo_originario: boolean;
-  pertenece_a_pueblo_afrodescendiente: boolean | null;
-  id_pueblo_originario: string | null;
+  pertenece_a_pueblo_afrodescendiente?: boolean;
+  id_pueblo_originario?: string;
+  nombre_otro_pueblo_originario?: string;
 };
 
 type SolicitudInterconsultaExtraida = {
@@ -29,7 +30,7 @@ type SolicitudInterconsultaExtraida = {
   referencia_origen: string;
   fundamento_priorizacion: string;
   id_especialidad_destino: string;
-  id_subespecialidad_destino: string | null;
+  id_subespecialidad_destino?: string;
   modalidad_atencion: string;
   prioridad: string;
   referencia_destino: string;
@@ -43,3 +44,12 @@ type SolicitudInterconsultaExtraida = {
 type TransactionOrConnectionPool =
   | import("mssql").Transaction
   | import("mssql").ConnectionPool;
+
+type PacienteEncontradoDadoNumeroPaciente = Omit<
+  PacienteExtraido,
+  "fecha_nacimiento" | "identificadores"
+> & {
+  numero_paciente: string;
+  fecha_nacimiento: Date;
+  fecha_fallecimiento?: Date;
+};

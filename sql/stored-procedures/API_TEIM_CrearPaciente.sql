@@ -57,9 +57,9 @@ BEGIN
     )
     VALUES (
         @numeroPaciente,
-        @Nombre,
-        @ApellidoPaterno,
-        @ApellidoMaterno,
+        ISNULL(@Nombre, ''),
+        ISNULL(@ApellidoPaterno, ''),
+        ISNULL(@ApellidoMaterno, ''),
         @FechaNacimiento,
         GETDATE(),
         @IdSexoBiologico,
