@@ -3,8 +3,7 @@ CREATE OR ALTER PROCEDURE API_TEIM_CrearIdentificadorPaciente
     @IdTipo TINYINT,
     @IdUso TINYINT = NULL,
     @Valor VARCHAR(64),
-    @IdPaisEmisorDocumento SMALLINT,
-    @CreatedBy VARCHAR(10)
+    @IdPaisEmisorDocumento SMALLINT
 AS
 BEGIN
     DECLARE @resultado TABLE (
@@ -18,9 +17,7 @@ BEGIN
         IdTipo,
         IdUso,
         Valor,
-        IdPaisEmisorDocumento,
-        CreatedBy,
-        CreatedAt
+        IdPaisEmisorDocumento
     )
     OUTPUT INSERTED.Id INTO @resultado
     VALUES (
@@ -28,11 +25,9 @@ BEGIN
         @IdTipo,
         @IdUso,
         @Valor,
-        @IdPaisEmisorDocumento,
-        @CreatedBy,
-        GETDATE()
+        @IdPaisEmisorDocumento
     );
 
-    SELECT TOP (1) Id as 'id_identificador'
+    SELECT TOP (1) Id as 'id'
     FROM @resultado;
 END

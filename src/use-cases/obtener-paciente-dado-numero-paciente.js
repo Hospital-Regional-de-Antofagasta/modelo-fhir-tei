@@ -39,3 +39,20 @@ export async function obtenerPacienteDadoNumeroPaciente(tran, numeroPaciente) {
       pacienteEncontrado.nombre_otro_pueblo_originario ?? undefined,
   };
 }
+
+/**
+ * @param {TransactionOrConnectionPool} dbCon
+ * @param {string} numeroPaciente
+ * @returns {Promise<{ id: string, texto_tipo: string, id_tipo: string, texto_uso: string, id_uso: string, valor: string, id_pais_emisor_documento: string, texto_pais_emisor_documento: string }[]>}
+ */
+export async function obtenerIdentificadoresPacienteDadoNumeroPaciente(
+  dbCon,
+  numeroPaciente
+) {
+  return (
+    await dbCon
+      .request()
+      .input("NumeroPaciente", mssql.Float, numeroPaciente)
+      .execute("API_TEIM_ObtenerIdentificadoresPacienteDadoNumeroPaciente")
+  ).recordset;
+}

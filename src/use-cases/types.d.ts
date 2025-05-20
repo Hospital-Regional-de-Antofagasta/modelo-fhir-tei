@@ -3,12 +3,7 @@ type PacienteExtraido = {
   apellido_paterno?: string;
   apellido_materno?: string;
   nombre_social?: string;
-  identificadores: {
-    id_tipo_identificador: string;
-    id_uso: string;
-    valor: string;
-    id_pais_emisor_documento: string;
-  }[];
+  identificadores: IdentificadorPacienteExtraido[];
   fecha_nacimiento: string;
   id_sexo_biologico: string;
   id_identidad_genero: string;
@@ -19,6 +14,13 @@ type PacienteExtraido = {
   pertenece_a_pueblo_afrodescendiente?: boolean;
   id_pueblo_originario?: string;
   nombre_otro_pueblo_originario?: string;
+};
+
+type IdentificadorPacienteExtraido = {
+  id_tipo_identificador: string;
+  id_uso?: string;
+  valor: string;
+  id_pais_emisor_documento: string;
 };
 
 type SolicitudInterconsultaExtraida = {

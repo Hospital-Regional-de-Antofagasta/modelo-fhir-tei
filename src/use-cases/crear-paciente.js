@@ -49,3 +49,29 @@ export async function crearPaciente(tran, pacienteExtraido) {
 
   return resultado[0];
 }
+
+/**
+ *
+ * @param {TransactionOrConnectionPool} tran
+ * @param {string} numeroPaciente
+ * @param {IdentificadorPacienteExtraido} identificadorPaciente
+ * @returns
+ */
+export async function crearIdentificadorPaciente(
+  tran,
+  numeroPaciente,
+  identificadorPaciente
+) {
+  return await tran
+    .request()
+    .input("NumeroPaciente", mssql.Float, numeroPaciente)
+    .input("IdTipo", mssql.TinyInt, identificadorPaciente.id_tipo_identificador)
+    .input("IdUso", mssql.TinyInt, identificadorPaciente.id_uso)
+    .input("Valor", mssql.VarChar(64), identificadorPaciente.valor)
+    .input(
+      "IdPaisEmisorDocumento",
+      mssql.SmallInt,
+      identificadorPaciente.id_pais_emisor_documento
+    )
+    .execute("API_TEIM_CrearIdentificadorPaciente");
+}
