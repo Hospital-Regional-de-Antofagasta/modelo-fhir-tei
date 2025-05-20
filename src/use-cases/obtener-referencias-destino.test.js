@@ -28,8 +28,8 @@ describe("Obtener referencias de destino", () => {
     expect.hasAssertions();
     if (!pool) throw new Error();
 
-    const estados = await obtenerReferenciasDestino(pool);
-    expect(estados.length).toEqual(5);
+    const referencias = await obtenerReferenciasDestino(pool);
+    expect(referencias.length).toEqual(5);
   });
 
   it("Debe encontrar la referencia de destino 'Nivel Secundario' dado su código FHIR '1'", async () => {
