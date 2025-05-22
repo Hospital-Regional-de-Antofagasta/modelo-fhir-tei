@@ -55,3 +55,28 @@ type PacienteEncontradoDadoNumeroPaciente = Omit<
   fecha_nacimiento: Date;
   fecha_fallecimiento?: Date;
 };
+
+type CrearSolicitudInterconsultaDesdeRAYENParams = {
+  numero_paciente: string;
+  requiere_examen: boolean;
+  es_atencion_preferente: boolean;
+  tiene_resolutividad_aps: boolean;
+  id_referencia_origen: string;
+  id_referencia_destino: string;
+  identificador_fhir: string;
+  identificador_minsal: string;
+  identificador_rayen: string;
+  id_especialidad_origen: string;
+  id_establecimiento_origen: string;
+  id_especialidad_destino: string;
+  id_subespecialidad_destino?: string;
+  id_diagnostico: string;
+  id_estado_diagnostico: string;
+  fundamentos_diagnostico: string;
+  id_motivo_derivacion: string;
+  motivo_especifico: string;
+  examenes_realizados: string;
+  fecha_solicitud: string;
+  id_prioridad: string;
+  id_modalidad_atencion: string;
+};

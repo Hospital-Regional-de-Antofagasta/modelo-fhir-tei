@@ -17,7 +17,6 @@ CREATE OR ALTER PROCEDURE [dbo].[API_TEIM_CrearSolicitudInterconsultaDesdeRAYEN]
 
     @IdEspecialidadOrigen BIGINT,
     @IdEstablecimientoOrigen BIGINT,
-    @IdEstablecimientoDestino BIGINT,
     @IdEspecialidadDestino BIGINT,
     @IdSubespecialidadDestino BIGINT = NULL,
 
@@ -82,7 +81,8 @@ BEGIN
         ExamenesRealizados,
         FechaSolicitud,
         IdPrioridad,
-        IdModalidadAtencion
+        IdModalidadAtencion,
+        IdTipoPrestacion
     )
     OUTPUT INSERTED.Id INTO @resultado
     VALUES (
@@ -114,7 +114,8 @@ BEGIN
         @ExamenesRealizados,
         @FechaSolicitud,
         @IdPrioridad,
-        @IdModalidadAtencion
+        @IdModalidadAtencion,
+        1
     );
 
     SELECT Id AS 'id' FROM @resultado;
