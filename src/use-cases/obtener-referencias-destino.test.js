@@ -88,7 +88,7 @@ describe("Obtener referencias de destino", () => {
     expect(referenciaHospitalDigital?.texto).toMatch("Hospital Digital");
   });
 
-  it("Debe encontrar la referencia de destino 'Establecimiento de alta complejidad' dado su código FHIR '5'", async () => {
+  it("Debe encontrar la referencia de destino 'Establecimiento Alta Complejidad' dado su código FHIR '5'", async () => {
     expect.hasAssertions();
     if (!pool) throw new Error();
 
@@ -102,7 +102,7 @@ describe("Obtener referencias de destino", () => {
       "5"
     );
     expect(referenciaEstablecimientoDeAltaComplejidad?.texto).toMatch(
-      "Establecimiento de alta complejidad"
+      "Establecimiento Alta Complejidad"
     );
   });
 });

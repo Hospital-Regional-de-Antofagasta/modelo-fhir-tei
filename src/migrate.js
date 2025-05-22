@@ -1,5 +1,6 @@
 import "dotenv/config";
 import {
+  createStoredProcedures,
   createUtilFunctions,
   migrateDown,
   migrateUp,
@@ -7,7 +8,7 @@ import {
 import { getDatabaseConnection } from "./utils.js";
 
 /**
- * @param {'up'|'down'|'full'} mode
+ * @param {'up'|'down'|'full'|'sp-only'} mode
  * @param {'rollback'|'commit'} onSuccess
  */
 async function migrate(mode, onSuccess) {
@@ -33,6 +34,8 @@ async function migrate(mode, onSuccess) {
       await migrateUp(tran);
     } else if (mode === "down") {
       await migrateDown(tran);
+    } else if (mode === "sp-only") {
+      await createStoredProcedures(tran);
     }
 
     if (onSuccess === "commit") {
@@ -43,6 +46,9 @@ async function migrate(mode, onSuccess) {
   } catch (error) {
     console.error(JSON.stringify(error, null, 2));
     await tran.rollback();
+    // throw new Error(
+    //   JSON.stringify(error, null, 2).slice(0, 1000).replace(/\n/g, " ")
+    // );
     throw error;
   }
   await pool.close();
@@ -50,7 +56,7 @@ async function migrate(mode, onSuccess) {
 }
 
 const mode = process.argv[3];
-if (mode !== "up" && mode !== "down" && mode !== "full") {
+if (mode !== "up" && mode !== "down" && mode !== "full" && mode !== "sp-only") {
   throw new Error(`Invalid mode '${mode}'`);
 }
 const onSuccess = process.argv[4];

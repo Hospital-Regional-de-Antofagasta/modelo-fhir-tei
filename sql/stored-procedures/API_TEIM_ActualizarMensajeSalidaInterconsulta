@@ -1,0 +1,17 @@
+CREATE OR ALTER PROCEDURE [dbo].[API_TEIM_ActualizarMensajeSalidaInterconsulta]
+    @IdMensajeSalidaInterconsulta UNIQUEIDENTIFIER,
+    @Respuesta VARCHAR(MAX),
+    @FechaEnvio DATETIME
+AS
+BEGIN
+    IF NOT EXISTS (SELECT TOP(1) 1 FROM [dbo].[TEIM_MensajeSalidaInterconsulta] WHERE Id = @IdMensajeSalidaInterconsulta) BEGIN
+        RAISERROR('El mensaje de salida de interconsulta no existe', 16, 1)
+        END
+    END
+
+    UPDATE TOP(1) [dbo].[TEIM_MensajeSalidaInterconsulta]
+    SET
+        Respuesta = @Respuesta,
+        FechaEnvio = @FechaEnvio
+    WHERE Id = @IdMensajeSalidaInterconsulta
+END

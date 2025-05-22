@@ -10,8 +10,8 @@ CREATE TABLE [dbo].[ListaEspera_TAB_ReferenciaDestino](
 );
 
 INSERT INTO [dbo].[ListaEspera_TAB_ReferenciaDestino] (Id, Codigo, CodigoFHIR, Texto) VALUES
-(1, '1', '1', 'APS'),
-(2, '2', '2', 'Nivel Secundario'),
+(1, '1', '1', 'Nivel Secundario'),
+(2, '2', '2', 'APS'),
 (3, '3', '3', 'Extra Sistema'),
 (4, '4', '4', 'Hospital Digital'),
 (5, '5', '5', 'Establecimiento Alta Complejidad');

@@ -3,8 +3,8 @@ AS
 BEGIN
     SELECT
         Id AS 'id',
-        CodigoFHIR AS 'codigo_fhir',
+        Codigo AS 'codigo_fhir',
         Texto AS 'texto'
-    FROM [dbo].[ListaEspera_TAB_PrioridadCaso]
-    WHERE Vigencia = 1 AND CodigoFHIR is not NULL
+    FROM [dbo].[TAB_FHIR_PrioridadSolicitud]
+    WHERE Vigencia = 1 AND Codigo is not NULL
 END

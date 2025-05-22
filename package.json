@@ -11,7 +11,8 @@
     "test-migrate-full": "node src/migrate.js -- full rollback",
     "migrate-up": "node src/migrate.js -- up commit",
     "migrate-down": "node src/migrate.js -- down commit",
-    "migrate-full": "node src/migrate.js -- full commit"
+    "migrate-full": "node src/migrate.js -- full commit",
+    "migrate-sp-only": "node src/migrate.js -- sp-only commit"
   },
   "repository": {
     "type": "git",

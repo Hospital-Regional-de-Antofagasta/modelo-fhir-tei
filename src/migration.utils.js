@@ -20,11 +20,11 @@ async function createTable(tran, tableScriptPath) {
   ).output;
 
   if (!existe) {
-    console.log(`Executing ${tableScriptPath}...`);
+    console.log(`⚡ Executing ${tableScriptPath}...`);
     const query = fs.readFileSync(tableScriptPath, "utf-8");
     await tran.request().query(query);
   } else {
-    console.log(`Table '${tableName}' already exists, skipping...`);
+    console.warn(`👀 Skipping table '${tableName}' as it already exists...`);
   }
 }
 
@@ -73,6 +73,7 @@ export async function createUtilFunctions(tran) {
  * @param {import('mssql').Transaction} tran
  */
 export async function migrateUp(tran) {
+  await createUtilFunctions(tran);
   await createBaseTables(tran);
 
   const scripts = getFilenamesRecursively(path.join(".", "sql", "tables"))
@@ -153,20 +154,18 @@ export async function migrateDown(tran) {
 
   for (const table of scripts) {
     if (table.isDownScript) {
-      console.log(`Executing ${table.path}...`);
+      console.log(`⚡ Executing ${table.path}...`);
       const query = fs.readFileSync(table.path, "utf-8");
       await tran.request().query(query);
     } else {
-      console.info(`Dropping table '${table.tableName}'...`);
+      console.info(`🧨 Dropping table '${table.tableName}'...`);
       await tran
         .request()
         .query(`DROP TABLE IF EXISTS [dbo].[${table.tableName}];`);
     }
   }
 
-  await tran
-    .request()
-    .query(`
+  await tran.request().query(`
       DROP FUNCTION IF EXISTS dbo._ExisteColumnaEnTabla;
       DROP FUNCTION IF EXISTS dbo._ObtenerColumnasPK;
     `);
@@ -175,13 +174,13 @@ export async function migrateDown(tran) {
 /**
  * @param {import('mssql').Transaction} tran
  */
-async function createStoredProcedures(tran) {
+export async function createStoredProcedures(tran) {
   const storedProcedureFilenames = getFilenamesRecursively(
     path.join(".", "sql", "stored-procedures")
   ).filter((f) => f.endsWith(".sql"));
 
   for (const spFilename of storedProcedureFilenames) {
-    console.log(`Executing ${spFilename}...`);
+    console.log(`⚡ Executing ${spFilename}...`);
     const query = fs.readFileSync(spFilename, "utf-8");
     await tran.request().query(query);
   }

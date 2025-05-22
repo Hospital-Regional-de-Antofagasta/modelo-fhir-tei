@@ -60,7 +60,7 @@ describe("Obtener referencias de origen", () => {
     expect(referenciaUrgencia?.texto).toMatch("Urgencia");
   });
 
-  it("Debe encontrar la referencia de origen 'Derivación' dado su código FHIR '3'", async () => {
+  it("Debe encontrar la referencia de origen 'Derivacion' dado su código FHIR '3'", async () => {
     expect.hasAssertions();
     if (!pool) throw new Error();
 
@@ -70,6 +70,6 @@ describe("Obtener referencias de origen", () => {
     );
     expect(referenciaDerivacion?.id).toBeDefined();
     expect(referenciaDerivacion?.codigo_fhir).toEqual("3");
-    expect(referenciaDerivacion?.texto).toMatch("Derivación");
+    expect(referenciaDerivacion?.texto).toMatch("Derivacion");
   });
 });
