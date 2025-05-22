@@ -5,7 +5,7 @@
 CREATE TABLE [dbo].[FHIR_BundleIniciarEnriquecido] (
     -- Id UNIQUEIDENTIFIER NOT NULL DEFAULT NEWID() CONSTRAINT PK_BUNDLEINICIARENRIQUECIDO PRIMARY KEY,
 
-    IdSolicitudInterconsulta UNIQUEIDENTIFIER NOT NULL,
+    IdSolicitudInterconsulta BIGINT NOT NULL,
     BundleOriginal VARCHAR(MAX) NOT NULL,
 
     -- EstablecimientoSolicitanteDTO VARCHAR(MAX) NOT NULL,
@@ -14,3 +14,6 @@ CREATE TABLE [dbo].[FHIR_BundleIniciarEnriquecido] (
 
     CreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
 )
+
+ALTER TABLE [dbo].[FHIR_BundleIniciarEnriquecido] ADD
+CONSTRAINT FK_FHIR_BUNDLEINICIARENRIQUECIDO_SOLICITUDINTERCONSULTA FOREIGN KEY (IdSolicitudInterconsulta) REFERENCES [dbo].[ListaEspera_Interconsulta](Id);

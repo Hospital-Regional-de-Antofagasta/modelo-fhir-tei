@@ -1,4 +1,4 @@
-
+/* 20 */
 CREATE TABLE [dbo].[DomicilioPaciente]
 (
   Id UNIQUEIDENTIFIER CONSTRAINT PK_DOMICILIOPACIENTE PRIMARY KEY DEFAULT NEWID(),
@@ -35,4 +35,11 @@ CREATE TABLE [dbo].[DomicilioPaciente]
   [DeletedBy] [VARCHAR](10) NULL,
   [DeletedAt] DATETIME NULL
 );
--- EXEC sys.sp_addextendedproperty @name=N'FHIR_Line', @value=N'https://build.fhir.org/ig/Minsal-CL/SIGTEv2-IG/StructureDefinition-PatientLE-definitions.html#key_Patient.address.line' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'DomicilioPaciente', @level2type=N'COLUMN',@level2name=N'FHIR_Line'
+
+ALTER TABLE [dbo].[DomicilioPaciente] ADD
+CONSTRAINT FK_DOMICILIO_PACIENTE FOREIGN KEY (NumeroPaciente) REFERENCES [dbo].[PAC_Paciente](PAC_PAC_Numero),
+CONSTRAINT FK_DOMICILIO_USO FOREIGN KEY (IdUso) REFERENCES [dbo].[TAB_FHIR_UsoDomicilioPersona](Id),
+CONSTRAINT FK_DOMICILIO_COMUNA FOREIGN KEY (IdComuna) REFERENCES [dbo].[TAB_DEIS_Comuna](Id),
+CONSTRAINT FK_DOMICILIO_TIPOVIA FOREIGN KEY (IdTipoVia) REFERENCES [dbo].[TAB_DEIS_TipoVia](Id),
+CONSTRAINT FK_DOMICILIO_CREATEDBY FOREIGN KEY (CreatedBy) REFERENCES [dbo].[Segu_Usuarios]([Segu_Usr_Cuenta]),
+CONSTRAINT FK_DOMICILIO_DELETEDBY FOREIGN KEY (DeletedBy)REFERENCES [dbo].[Segu_Usuarios]([Segu_Usr_Cuenta]);

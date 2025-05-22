@@ -1,0 +1,27 @@
+/* 201 */
+IF (OBJECT_ID('dbo.UQ_SER_PROFESIONA', 'UQ') IS NOT NULL)
+ALTER TABLE [dbo].[SER_Profesiona] DROP CONSTRAINT UQ_SER_PROFESIONA
+
+IF (
+    OBJECT_ID('dbo.PK_SER_PROFESIONA', 'PK') IS NOT NULL
+    AND (SELECT COUNT(1) FROM dbo._ObtenerColumnasPK('dbo.SER_Profesiona')) = 1
+) BEGIN
+    ALTER TABLE [dbo].[SER_Profesiona] DROP CONSTRAINT PK_SER_PROFESIONA
+    
+    ALTER TABLE [dbo].[SER_Profesiona] ADD
+    CONSTRAINT [PK_SER_PROFESIONA] PRIMARY KEY ([SER_PRO_Rut] ASC, [SER_PRO_Tipo] ASC, [SER_PRO_Procedencia] ASC)
+END
+
+-- ALTER TABLE [dbo].[SER_Profesiona] DROP COLUMN IF EXISTS IdIdentidadGenero
+-- ALTER TABLE [dbo].[SER_Profesiona] DROP COLUMN IF EXISTS IdNacionalidad
+-- ALTER TABLE [dbo].[SER_Profesiona] DROP COLUMN IF EXISTS NumeroRPNI
+-- ALTER TABLE [dbo].[SER_Profesiona] DROP COLUMN IF EXISTS FechaNacimiento
+-- ALTER TABLE [dbo].[SER_Profesiona] DROP COLUMN IF EXISTS IdSexoBiologico
+-- ALTER TABLE [dbo].[SER_Profesiona] DROP
+-- CONSTRAINT IF EXISTS DF_SER_PROFESIONA_ID,
+-- COLUMN IF EXISTS Id,
+-- COLUMN IF EXISTS IdIdentidadGenero,
+-- COLUMN IF EXISTS IdNacionalidad,
+-- COLUMN IF EXISTS NumeroRPNI,
+-- COLUMN IF EXISTS FechaNacimiento,
+-- COLUMN IF EXISTS IdSexoBiologico

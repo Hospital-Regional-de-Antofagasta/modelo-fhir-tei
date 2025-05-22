@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS [dbo].[TAB_FHIR_RelacionContactoPaciente];
-
-
+/* 50 */
 CREATE TABLE [dbo].[TAB_FHIR_RelacionContactoPaciente]
 (
   Id TINYINT CONSTRAINT PK_FHIR_RELACIONCONTACTOPACIENTE PRIMARY KEY (Id),
@@ -11,7 +9,9 @@ CREATE TABLE [dbo].[TAB_FHIR_RelacionContactoPaciente]
   [CreatedBy] [VARCHAR](10) NOT NULL DEFAULT SUSER_NAME(),
   [CreatedAt] DATETIME NOT NULL DEFAULT GETDATE()
 );
-EXEC sys.sp_addextendedproperty @name=N'Codigo', @value=N'https://hl7.org/fhir/R4/valueset-patient-contactrelationship.html' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'TABLE',@level1name=N'TAB_FHIR_RelacionContactoPaciente', @level2type=N'COLUMN',@level2name=N'Codigo'
+
+ALTER TABLE [dbo].[TAB_FHIR_RelacionContactoPaciente] ADD
+CONSTRAINT FK_FHIR_RELACIONCONTACTOPACIENTE_USUARIO FOREIGN KEY (CreatedBy) REFERENCES [dbo].[Segu_Usuarios]([Segu_Usr_Cuenta]);
 
 INSERT INTO [dbo].[TAB_FHIR_RelacionContactoPaciente]
   (Id, Codigo, Nombre)

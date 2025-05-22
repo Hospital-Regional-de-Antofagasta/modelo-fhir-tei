@@ -1,4 +1,4 @@
-
+/* 20 */
 CREATE TABLE [dbo].[TituloProfesionalPrestador]
 (
     IdPrestador UNIQUEIDENTIFIER NOT NULL,

@@ -1,8 +1,4 @@
-SET ANSI_NULLS OFF
-
-SET QUOTED_IDENTIFIER ON
-
-
+/* 50 */
 CREATE TABLE [dbo].[TAB_FHIR_UsoIdentificadorPersona] (
     Id TINYINT CONSTRAINT PK_FHIR_USOIDENTIFICADORPERSONA PRIMARY KEY (Id),
     Codigo VARCHAR(10) NOT NULL UNIQUE,
@@ -12,8 +8,11 @@ CREATE TABLE [dbo].[TAB_FHIR_UsoIdentificadorPersona] (
     [CreatedAt] DATETIME NOT NULL DEFAULT GETDATE()
 );
 
+ALTER TABLE [dbo].[TAB_FHIR_UsoIdentificadorPersona] ADD
+CONSTRAINT FK_FHIR_USOIDENTIFICADORPERSONA_USUARIO FOREIGN KEY(CreatedBy) REFERENCES [dbo].[Segu_Usuarios]([Segu_Usr_Cuenta]);
+
 INSERT INTO [dbo].[TAB_FHIR_UsoIdentificadorPersona] ([Id], [Codigo], [Texto]) VALUES
-    (1, 'usual', 'Usual'),
+    (1, 'usual', 'Común'),
     (2, 'official', 'Oficial'),
     (3, 'temp', 'Temporal'),
     (4, 'secondary', 'Secundario'),

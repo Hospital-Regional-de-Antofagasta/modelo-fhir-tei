@@ -1,8 +1,4 @@
-SET ANSI_NULLS OFF
-
-SET QUOTED_IDENTIFIER ON
-
-
+/* 50 */
 CREATE TABLE [dbo].[TAB_TipoMedioContacto] (
   Id TINYINT CONSTRAINT PK_TIPOMEDIOCONTACTO PRIMARY KEY (Id),
   Texto VARCHAR(50) NOT NULL,
@@ -10,6 +6,11 @@ CREATE TABLE [dbo].[TAB_TipoMedioContacto] (
   [CreatedBy] [VARCHAR](10) NOT NULL DEFAULT SUSER_NAME(),
   [CreatedAt] DATETIME NOT NULL DEFAULT GETDATE()
 );
+
+
+ALTER TABLE [dbo].[TAB_TipoMedioContacto] ADD
+CONSTRAINT FK_TIPOMEDIOCONTACTO_USUARIO FOREIGN KEY (CreatedBy) REFERENCES [dbo].[Segu_Usuarios]([Segu_Usr_Cuenta]);
+
 
 INSERT INTO [dbo].[TAB_TipoMedioContacto] ([Id], [Texto]) VALUES
   (1, 'Telefono Móvil'),

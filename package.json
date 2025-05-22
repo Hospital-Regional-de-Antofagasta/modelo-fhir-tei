@@ -6,9 +6,12 @@
   "main": "index.js",
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles --verbose",
-    "drop-tables": "node src/sql.js -- -- drop-tables",
-    "create-tables": "node src/sql.js -- -- create-tables",
-    "drop-and-create-tables": "node src/sql.js -- -- drop-and-create-tables"
+    "test-migrate-up": "node src/migrate.js -- up rollback",
+    "test-migrate-down": "node src/migrate.js -- down rollback",
+    "test-migrate-full": "node src/migrate.js -- full rollback",
+    "migrate-up": "node src/migrate.js -- up commit",
+    "migrate-down": "node src/migrate.js -- down commit",
+    "migrate-full": "node src/migrate.js -- full commit"
   },
   "repository": {
     "type": "git",

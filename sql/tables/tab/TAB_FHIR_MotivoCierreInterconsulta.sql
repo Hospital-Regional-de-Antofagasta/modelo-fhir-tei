@@ -1,3 +1,4 @@
+/* 50 */
 CREATE TABLE [dbo].[TAB_FHIR_MotivoCierreInterconsulta] (
     Id TINYINT NOT NULL CONSTRAINT PK_FHIR_MOTIVOCIERREINTERCONSULTA PRIMARY KEY,
     Codigo VARCHAR(2) NOT NULL UNIQUE,
@@ -7,6 +8,10 @@ CREATE TABLE [dbo].[TAB_FHIR_MotivoCierreInterconsulta] (
     [CreatedBy] [VARCHAR](10) NOT NULL DEFAULT SUSER_NAME(),
     [CreatedAt] DATETIME NOT NULL DEFAULT GETDATE(),
 );
+
+ALTER TABLE [dbo].[TAB_FHIR_MotivoCierreInterconsulta] ADD
+CONSTRAINT FK_FHIR_MOTIVOCIERREINTERCONSULTA_USUARIO FOREIGN KEY (CreatedBy) REFERENCES [dbo].[Segu_Usuarios]([Segu_Usr_Cuenta]);
+
 
 INSERT INTO [dbo].[TAB_FHIR_MotivoCierreInterconsulta] (Id, Codigo, Texto) VALUES
 (1, '1', 'GES (0)'),

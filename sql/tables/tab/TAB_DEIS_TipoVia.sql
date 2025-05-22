@@ -1,6 +1,4 @@
-
-
-
+/* 50 */
 CREATE TABLE [dbo].[TAB_DEIS_TipoVia]
 (
   Id TINYINT CONSTRAINT PK_DEIS_TIPOVIA PRIMARY KEY(Id),
@@ -11,6 +9,8 @@ CREATE TABLE [dbo].[TAB_DEIS_TipoVia]
   [CreatedBy] [VARCHAR](10) NOT NULL DEFAULT SUSER_NAME(),
   [CreatedAt] DATETIME NOT NULL DEFAULT GETDATE()
 );
+ALTER TABLE [dbo].[TAB_DEIS_TipoVia] ADD
+CONSTRAINT FK_DEIS_TIPOVIA_USUARIO FOREIGN KEY (CreatedBy) REFERENCES [dbo].[Segu_Usuarios]([Segu_Usr_Cuenta]);
 
 INSERT INTO [dbo].[TAB_DEIS_TipoVia] (Id, Codigo, Nombre) VALUES
     (1, '1', 'Calle'),

@@ -45,6 +45,7 @@ export function getDatabaseConnection({
     user: String(DB_USER),
     port: Number(DB_PORT),
     password: String(DB_PASSWORD),
+    connectionTimeout: 30000,
     options: {
       trustServerCertificate: true,
       encrypt: false,

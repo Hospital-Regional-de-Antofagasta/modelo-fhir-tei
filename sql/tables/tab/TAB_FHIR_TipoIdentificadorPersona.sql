@@ -1,5 +1,4 @@
-
-
+/* 50 */
 CREATE TABLE [dbo].[TAB_FHIR_TipoIdentificadorPersona] (
     Id TINYINT CONSTRAINT PK_FHIR_TIPOIDENTIFICADORPERSONA PRIMARY KEY (Id),
     Codigo CHAR(2) NOT NULL UNIQUE,
@@ -9,6 +8,10 @@ CREATE TABLE [dbo].[TAB_FHIR_TipoIdentificadorPersona] (
     [CreatedBy] [VARCHAR](10) NOT NULL DEFAULT SUSER_NAME(),
     [CreatedAt] DATETIME NOT NULL DEFAULT GETDATE()
 );
+
+ALTER TABLE TAB_FHIR_TipoIdentificadorPersona ADD
+CONSTRAINT FK_FHIR_TIPOIDENTIFICADORPERSONA_USUARIO FOREIGN KEY (CreatedBy) REFERENCES [dbo].[Segu_Usuarios]([Segu_Usr_Cuenta]);
+
 
 INSERT INTO [dbo].[TAB_FHIR_TipoIdentificadorPersona]
     (Id, Codigo, Texto, Descripcion)
