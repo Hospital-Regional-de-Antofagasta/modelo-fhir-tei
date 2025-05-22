@@ -39,73 +39,61 @@ BEGIN
         Id BIGINT
     );
 
-    DECLARE @idHospitalRegionalAntofagasta BIGINT = (
-        SELECT TOP 1 Id
-        FROM ListaEspera_TAB_Establecimiento
-        WHERE Codigo = '103100'
-    );
-
-    DECLARE @idSistemaRAYEN BIGINT = (
-        SELECT TOP 1 Id
-        FROM ListaEspera_TAB_SistemaOrigen
-        WHERE Codigo = '5'
-    );
+    DECLARE 
+        @idHospitalRegionalAntofagasta BIGINT = (SELECT TOP 1 [Id]
+                                                    FROM [dbo].[ListaEspera_TAB_Establecimiento]
+                                                    WHERE [Codigo] = '103100'), --Hospital Dr. Leonardo Guzmán (Antofagasta)
+        @idSistemaRAYEN BIGINT = (SELECT TOP 1 [Id]
+                                    FROM [dbo].[ListaEspera_TAB_SistemaOrigen]
+                                    WHERE [Codigo] = '5'), --INTEGRACIÓN RAYEN
+        @idEstadoInicial BIGINT = (SELECT TOP 1 [Id]
+                                    FROM [dbo].[TAB_FHIR_EstadoInterconsulta]
+                                    WHERE [Codigo] = '3') --A la espera de priorización
 
     INSERT INTO [dbo].[ListaEspera_Interconsulta] (
-        NumeroPaciente,
-        IdSistemaOrigen,
-
-        RequiereExamen,
-        EsAtencionPreferente,
-        TieneResolutividadAPS,
-
-        IdReferenciaOrigen,
-        IdReferenciaDestino,
-
-        IdentificadorFHIR,
-        IdentificadorMINSAL,
-        IdentificadorOrigen,
-
-        IdEspecialidadOrigen,
-        IdEstablecimientoOrigen,
-        IdEstablecimientoDestino,
-        IdEspecialidadDestino,
-        IdSubespecialidadDestino,
-
-
-        IdDiagnostico,
-        IdEstadoDiagnostico, -- unconfirmed | provisional | differential | confirmed | refuted | entered-in-error
-        FundamentosDiagnostico,
-        IdMotivoDerivacion,
-        MotivoEspecifico,
-        ExamenesRealizados,
-        FechaSolicitud,
-        IdPrioridad,
-        IdModalidadAtencion,
-        IdTipoPrestacion
+        [NumeroPaciente],
+        [IdSistemaOrigen],
+        [RequiereExamen],
+        [EsAtencionPreferente],
+        [TieneResolutividadAPS],
+        [IdReferenciaOrigen],
+        [IdReferenciaDestino],
+        [IdentificadorFHIR],
+        [IdentificadorMINSAL],
+        [IdentificadorOrigen],
+        [IdEspecialidadOrigen],
+        [IdEstablecimientoOrigen],
+        [IdEstablecimientoDestino],
+        [IdEspecialidadDestino],
+        [IdSubespecialidadDestino],
+        [IdDiagnostico],
+        [IdEstadoDiagnostico], -- unconfirmed | provisional | differential | confirmed | refuted | entered-in-error
+        [FundamentosDiagnostico],
+        [IdMotivoDerivacion],
+        [MotivoEspecifico],
+        [ExamenesRealizados],
+        [FechaSolicitud],
+        [IdPrioridad],
+        [IdModalidadAtencion],
+        [IdTipoPrestacion]
     )
     OUTPUT INSERTED.Id INTO @resultado
     VALUES (
         @NumeroPaciente,
         @idSistemaRAYEN,
-
         @RequiereExamen,
         @EsAtencionPreferente,
         @TieneResolutividadAPS,
-
         @IdReferenciaOrigen,
         @IdReferenciaDestino,
-
         @IdentificadorFHIR,
         @IdentificadorMINSAL,
         @IdentificadorRAYEN,
-
         @IdEspecialidadOrigen,
         @IdEstablecimientoOrigen,
         @idHospitalRegionalAntofagasta,
         @IdEspecialidadDestino,
         @IdSubespecialidadDestino,
-
         @IdDiagnostico,
         @IdEstadoDiagnostico, -- unconfirmed | provisional | differential | confirmed | refuted | entered-in-error
         @FundamentosDiagnostico,
@@ -117,6 +105,25 @@ BEGIN
         @IdModalidadAtencion,
         1
     );
+
+	INSERT INTO [dbo].[ListaEspera_EstadoInterconsulta]
+           ([IdEstado]
+           ,[IdInterconsulta])
+     VALUES
+           (@idEstadoInicial
+           ,(SELECT TOP(1) Id AS 'id' FROM @resultado))
+
+
+	INSERT INTO [dbo].[FHIR_EventoTributacionInterconsulta]
+           ([IdInterconsulta]
+           ,[IdTipoEvento]
+           ,[OrdenEnvio])
+    SELECT (SELECT TOP(1) Id AS 'id' FROM @resultado)
+	       ,[Id]
+           ,row_number() OVER (ORDER BY [Id] ASC)
+	FROM [dbo].[TAB_FHIR_TipoEventoInterconsulta]
+	WHERE [Id] > 3
+
 
     SELECT Id AS 'id' FROM @resultado;
 END

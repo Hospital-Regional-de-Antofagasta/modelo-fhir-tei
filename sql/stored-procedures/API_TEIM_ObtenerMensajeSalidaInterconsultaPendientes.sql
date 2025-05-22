@@ -3,7 +3,7 @@ CREATE OR ALTER PROCEDURE [dbo].[API_TEIM_ObtenerMensajeSalidaInterconsultaPendi
     @CantidadMaximaMensajes INT = 100
 AS
 BEGIN
-    IF NOT EXISTS (SELECT TOP (1) 1 FROM [dbo].[FHIR_TEI_TAB_TipoEventoInterconsulta] WHERE Id = @IdTipoEvento) BEGIN
+    IF NOT EXISTS (SELECT TOP (1) 1 FROM [dbo].[TAB_FHIR_TipoEventoInterconsulta] WHERE Id = @IdTipoEvento) BEGIN
         RAISERROR('El tipo de evento no existe.', 16, 1)
         RETURN 1
     END
